@@ -23,6 +23,7 @@ OUT = os.path.join(ROOT, "docs", "index.html")
 TEMPLATE = os.path.join(ROOT, "template.html")
 LEAGUES_FILE = os.path.join(ROOT, "leagues.json")
 SITE_FILE = os.path.join(ROOT, "site.json")
+AVATARS_FILE = os.path.join(ROOT, "avatars.json")  # optional {player id: photo url}
 
 MIN_SONGS = 15  # minimum songs for per-song averages
 
@@ -32,7 +33,7 @@ GENRES = [
     ("Metal", ["metal", "metalcore", "grindcore", "deathcore", "djent"]),
     ("Punk", ["punk", "hardcore", "emo", "ska", "riot grrrl"]),
     ("Electronic / dance", ["electronic", "electronica", "house", "techno", "edm", "dance", "disco", "trance",
-                            "drum and bass", "dubstep", "synth-pop", "synthpop", "ambient", "idm", "trip hop",
+                            "drum and bass", "dubstep", "ambient", "idm", "trip hop",
                             "big beat", "electro"]),
     ("R&B / soul", ["soul", "r&b", "rnb", "rhythm and blues", "rhythm & blues", "funk", "motown", "neo soul",
                     "neo-soul", "quiet storm", "new jack swing", "gospel"]),
@@ -53,24 +54,32 @@ GENRES = [
 ]
 
 
+def tag_bucket(tag):
+    """Map one MusicBrainz tag to a bucket: exact names first, then "...pop" compounds, then substrings."""
+    t = tag.lower().strip()
+    for bucket, keys in GENRES:
+        if t in keys:
+            return bucket
+    if "indie" in t:
+        return "Indie / alternative"
+    if ("pop" in t.replace("-", " ").split() or t.endswith("pop")) and "punk" not in t:
+        return "Pop"
+    for bucket, keys in GENRES:
+        if any(k in t for k in keys if len(k) > 3):
+            return bucket
+    return None
+
+
 def genre_for(tags):
     """Pick the bucket whose matching tags carry the most votes."""
     if not tags:
         return None
     scores = collections.Counter()
     for tag, count in tags.items():
-        t = tag.lower()
-        weight = max(count, 0) + 1
-        for bucket, keys in GENRES:
-            if t in keys or any(k == t or (len(k) > 3 and k in t.split()) for k in keys):
-                scores[bucket] += weight
-                break
-            if any(k in t for k in keys if len(k) > 4):
-                scores[bucket] += weight * 0.5
-                break
-    if not scores:
-        return None
-    return scores.most_common(1)[0][0]
+        bucket = tag_bucket(tag)
+        if bucket:
+            scores[bucket] += max(count, 0) + 1
+    return scores.most_common(1)[0][0] if scores else None
 
 
 def load_json(path, default):
@@ -118,6 +127,7 @@ def main():
         with open(SITE_FILE, "w", encoding="utf-8") as f:
             json.dump(site_cfg, f, indent=2)
 
+    avatars = load_json(AVATARS_FILE, {})
     spotify = load_json(os.path.join(CACHE, "spotify.json"), {})
     mb_rec = load_json(os.path.join(CACHE, "mb_recordings.json"), {})
     mb_art = load_json(os.path.join(CACHE, "mb_artists.json"), {})
@@ -224,6 +234,7 @@ def main():
         "site": site_cfg,
         "built": datetime.now().strftime("%B %-d, %Y"),
         "players": [pname[p] for p in pids],
+        "avatars": [avatars.get(p) for p in pids],
         "leagues": leagues,
         "rounds": rounds,
         "subs": subs,

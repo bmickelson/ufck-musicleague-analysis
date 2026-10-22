@@ -95,10 +95,12 @@ header.hero { position: relative; overflow: clip; padding-block: 64px 36px; isol
 @media (max-width: 640px) { .vinyl { right: -55%; top: 4%; width: 115vw; opacity: .6; } }
 
 /* headline facts */
-.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-block: 40px 8px; }
-.fact { background: color-mix(in srgb, var(--sheet) 88%, transparent); backdrop-filter: blur(6px); padding: 16px 18px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-block: 44px 8px; }
+@media (max-width: 960px) { .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .facts { grid-template-columns: minmax(0, 1fr); } }
+.fact { background: color-mix(in srgb, var(--sheet) 84%, transparent); backdrop-filter: blur(8px); border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 18px 40px -18px rgba(0, 0, 0, .55), 0 2px 0 var(--rule); transition: transform .25s cubic-bezier(.2, .7, .2, 1), box-shadow .25s, border-color .25s; padding: 18px 20px; display: grid; gap: 4px; align-content: start; min-width: 0; }
 .fact .v { font: 800 26px/1.02 var(--display); overflow-wrap: anywhere; }
-.fact:hover { background: var(--wash); }
+.fact:hover { transform: translateY(-5px); border-color: var(--up); box-shadow: 0 26px 50px -20px rgba(0, 0, 0, .6), 0 2px 0 var(--up); }
 .fact .s { color: var(--ink-2); font-size: 14px; }
 
 /* nav */
@@ -125,8 +127,31 @@ section.side { padding-block: 64px 8px; scroll-margin-top: 56px; }
 .side > .wrap > header .eyebrow { justify-self: start; color: var(--up); border-top: 3px solid var(--up); padding-top: 8px; }
 .side header p { margin: 0; color: var(--ink-2); font-size: 17px; }
 .note { color: var(--ink-3); font-size: 13.5px; max-width: 72ch; margin: 14px 0 0; }
-.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 40px 48px; }
-.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px 36px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 20px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 20px; }
+.grid2 > .panel, .grid3 > .panel { background: color-mix(in srgb, var(--sheet) 82%, transparent); border: 1px solid var(--rule); border-radius: 10px; padding: 20px 22px 14px; display: flex; flex-direction: column; }
+.grid2 > .panel > ol.rank, .grid3 > .panel > ol.rank { flex: 1; align-content: start; }
+.sub-h { font: 800 25px/1.05 var(--display); text-transform: uppercase; margin: 32px 0 12px; }
+.more { color: var(--ink-3); font-size: 13.5px; margin: 8px 0 0; }
+.withav { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.withav > span { min-width: 0; }
+.av { width: 26px; height: 26px; border-radius: 50%; flex: none; object-fit: cover; display: inline-grid; place-items: center; background: var(--wash); color: var(--ink-2); border: 1px solid var(--rule); font: 600 9.5px/1 var(--mono); letter-spacing: .02em; }
+.withav .av + .av { margin-left: -14px; box-shadow: 0 0 0 2px var(--sheet); }
+.av.sm { width: 20px; height: 20px; font-size: 8px; }
+.av.lg { width: 34px; height: 34px; font-size: 11px; }
+.av.xl { width: 72px; height: 72px; font-size: 20px; border: 3px solid var(--up); }
+.pick-hint { color: var(--ink-2); margin: 0 0 16px; }
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr)); gap: 8px; }
+.person { all: unset; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--paper); font-weight: 700; font-size: 15px; transition: border-color .15s, transform .15s; }
+.person:hover { border-color: var(--up); transform: translateY(-2px); }
+.person:focus-visible { outline: 2px solid var(--up); outline-offset: 2px; }
+.lgtiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 10px; }
+.lgtile { border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; display: grid; gap: 2px; align-content: start; background: var(--paper); min-width: 0; }
+.lgtile b { font: 900 34px/1 var(--display); }
+.lgtile.won { border-color: var(--up); }
+.lgtile.won b { color: var(--up); }
+.lgtile .of { font: 600 10.5px/1.6 var(--mono); color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+.lgtile .ln { font-size: 14px; color: var(--ink-2); overflow-wrap: anywhere; }
 .panel { min-width: 0; }
 .panel h3 { font: 800 25px/1.05 var(--display); text-transform: uppercase; letter-spacing: .01em; margin: 0; }
 .panel h3 + .sub { color: var(--ink-3); font-size: 13.5px; margin: 2px 0 14px; }
@@ -202,13 +227,17 @@ button.link:hover { text-decoration: underline; }
 .stack span:last-child { border-radius: 2px 4px 4px 2px; }
 .sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
 
-/* love/hate */
-.lh { display: grid; grid-template-columns: minmax(0, 1fr) 2.2em minmax(0, 1fr) 2.2em; gap: 0 8px; align-items: center; }
-.lh .l { display: flex; justify-content: flex-end; }
-.lh .l span, .lh .r span { height: 10px; border-radius: 3px; display: block; }
-.lh .l span { background: var(--up); }
-.lh .r span { background: var(--down); }
+/* love/hate: bars meet at the middle, counts sit on the outer ends */
+.lh { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; align-items: center; }
+.lh .l, .lh .r { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.lh .l { justify-content: flex-end; }
+.lh i { display: block; height: 10px; width: calc((100% - 2.6em) * var(--w)); min-width: 3px; }
+.lh .l i { background: var(--up); border-radius: 4px 0 0 4px; }
+.lh .r i { background: var(--down); border-radius: 0 4px 4px 0; }
+.lh .num { font-size: 13px; font-weight: 600; min-width: 2em; }
+.lh .l .num { text-align: right; }
 .lhrow { padding: 10px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 6px; }
+.lhrow:last-child { border-bottom: 0; }
 .lhrow .t { font-weight: 600; }
 .lhrow .m { color: var(--ink-2); font-size: 13.5px; }
 
@@ -227,7 +256,7 @@ table.heat td.self { background: transparent; }
 .field { display: grid; gap: 6px; max-width: 420px; margin-bottom: 22px; }
 .field label { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
 select, input[type="search"] { font: 500 17px var(--body); padding: 11px 14px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); width: 100%; }
-.card-head { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: end; padding-bottom: 18px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
+.card-head { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; padding-bottom: 18px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
 .card-head h3 { font: 900 clamp(44px, 8vw, 84px)/.88 var(--display); text-transform: uppercase; letter-spacing: 0; margin: 0; flex: 1 1 260px; overflow-wrap: anywhere; }
 .statgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 20px; margin-bottom: 28px; }
 .stat b { display: block; font: 900 40px/1 var(--display); color: var(--up); }
@@ -317,17 +346,20 @@ const songLine = (s, opts = {}) => {
 };
 const cover = s => s.img ? `<img class="cov" src="${esc(s.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="cov"></span>`;
 
-function rankList(items, { title, meta, value, bar, max, cls, img }) {
+const AV = D.avatars || [];
+const initials = n => (n.replace(/[^\p{L}\p{N} ]/gu, "").trim().split(/\s+/).map(w => w[0]).slice(0, 2).join("") || "?").toUpperCase();
+const av = (pi, cls = "") => pi == null || pi < 0 ? "" : AV[pi] ? `<img class="av ${cls}" src="${esc(AV[pi])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="av ${cls}" aria-hidden="true">${esc(initials(P[pi]))}</span>`;
+function rankList(items, { title, meta, value, bar, max, cls, img, pi }) {
   const mx = max ?? Math.max(...items.map(x => Math.abs(bar ? bar(x) : 0)), 1);
   return `<ol class="rank">${items.map((x, i) => {
     const b = bar ? bar(x) : null;
-    const head = img ? `<span class="withcov">${cover(img(x))}<div><div class="t">${title(x)}</div><div class="m">${meta(x)}</div></div></span>` : `<span class="t">${title(x)}</span>`;
+    const head = img ? `<span class="withcov">${cover(img(x))}<div><div class="t">${title(x)}</div><div class="m">${meta(x)}</div></div></span>` : pi ? `<span class="t withav">${[].concat(pi(x)).map(k => av(k)).join("")}<span>${title(x)}</span></span>` : `<span class="t">${title(x)}</span>`;
     return `<li><span class="pos">${i + 1}</span>${head}<span class="val ${cls ? cls(x) : ""}">${value(x)}</span>${img ? "" : `<span class="m">${meta(x)}</span>`}${b != null ? `<span class="bar ${b < 0 ? "neg-bar" : ""}" style="width:${Math.max(1, Math.abs(b) / mx * 100)}%"></span>` : ""}</li>`;
   }).join("")}</ol>`;
 }
 const panel = (title, sub, body) => `<div class="panel"><h3>${title}</h3><p class="sub">${sub}</p>${body}</div>`;
 
-let S, V, LV, players, active, groups, repeats, topArtists, mode = "all", lastQ = null, firstPaint = true;
+let S, V, LV, players, active, groups, repeats, topArtists, mode = "all", lastQ = null, curPlayer = null, songOpts = new Set(), firstPaint = true;
 const MODES = { all: "All leagues", turbo: "Turbo", regular: "Regular" };
 function render() {
 const keep = l => mode === "all" || (mode === "turbo") === !!l.turbo;
@@ -379,32 +411,34 @@ const withGenre = S.filter(s => s.genre);
 
 const facts = [];
 const winLead = [...active].sort(by(p => p.wins))[0];
-facts.push(["Most round wins", esc(winLead.name), plural(winLead.wins, "outright win")]);
 const podLead = [...active].sort(by(p => p.pod[0] + p.pod[1] + p.pod[2]))[0];
-facts.push(["Most top-3 finishes", esc(podLead.name), plural(podLead.pod[0] + podLead.pod[1] + podLead.pod[2], "finish", "finishes")]);
 const titleLead = [...active].sort(by(p => p.titles * 1000 + p.total))[0];
-facts.push(["Most league titles", esc(titleLead.name), plural(titleLead.titles, "league") + " won"]);
 const hi = sortedScore[0], lo = sortedScore[sortedScore.length - 1];
-facts.push(["Highest score", esc(plain(hi.title)), sgn(hi.score) + " points · " + esc(P[hi.by])]);
-facts.push(["Lowest score", esc(plain(lo.title)), sgn(lo.score) + " points · " + esc(P[lo.by])]);
-if (repeats.length) { const r0 = repeats[0]; const tied = repeats.filter(g => g.length === r0.length).length - 1; facts.push(["Most repeated song", esc(plain(r0[0].title)), r0.length + " times" + (tied ? `, tied with ${tied} other${tied > 1 ? "s" : ""}` : "")]); }
 const harsh = [...voteAvg].sort(by(x => x.avg, 1))[0];
-if (harsh) facts.push(["Harshest voter", esc(harsh.p.name), n1(harsh.avg) + " average vote given"]);
 const ghost = [...active].sort(by(p => p.missed))[0];
-if (ghost && ghost.missed) facts.push(["Most forgotten votes", esc(ghost.name), plural(ghost.missed, "round") + " missed"]);
+facts.push(["Most round wins", esc(winLead.name), plural(winLead.wins, "outright win"), winLead.i]);
+facts.push(["Most league titles", esc(titleLead.name), plural(titleLead.titles, "league") + " won", titleLead.i]);
+facts.push(["Highest score", esc(plain(hi.title)), sgn(hi.score) + " points · " + esc(P[hi.by]), hi.by]);
+facts.push(["Lowest score", esc(plain(lo.title)), sgn(lo.score) + " points · " + esc(P[lo.by]), lo.by]);
+if (repeats.length) { const r0 = repeats[0]; const tied = repeats.filter(g => g.length === r0.length).length - 1; facts.push(["Most repeated song", esc(plain(r0[0].title)), r0.length + " times" + (tied ? `, tied with ${tied} other${tied > 1 ? "s" : ""}` : "")]); }
+if (harsh) facts.push(["Harshest voter", esc(harsh.p.name), n1(harsh.avg) + " average vote given", harsh.p.i]);
+if (ghost && ghost.missed) facts.push(["Most forgotten votes", esc(ghost.name), plural(ghost.missed, "round") + " missed", ghost.i]);
 if (withYear.length > S.length * 0.3) facts.push(["Average release year", String(Math.round(mean(withYear.map(s => s.year)))), "median " + Math.round(median(withYear.map(s => s.year)))]);
-$("#facts").innerHTML = facts.map(([k, v, s], i) => `<div class="fact ${firstPaint ? "rise" : ""}" style="--d:${8 + i}"><span class="eyebrow">${k}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join("");
+facts.push(["Most top-3 finishes", esc(podLead.name), plural(podLead.pod[0] + podLead.pod[1] + podLead.pod[2], "finish", "finishes"), podLead.i]);
+const topArt = top(count(S, s => s.lead), 1)[0];
+if (topArt) facts.push(["Most-picked artist", esc(topArt[0]), plural(topArt[1], "song")]);
+$("#facts").innerHTML = facts.slice(0, 8).map(([k, v, s, pi], i) => `<div class="fact ${firstPaint ? "rise" : ""}" style="--d:${8 + i}"><span class="eyebrow">${k}</span><span class="v">${v}</span><span class="s withav">${pi != null ? av(pi, "sm") : ""}<span>${s}</span></span></div>`).join("");
 
 // ---------- player lookup ----------
 addSection("players", "Find your name", "Player lookup", "Find your name",
   "Pick a player to see their record, their best and worst picks, the rounds they won, and who votes for them.",
-  `<div class="lookup"><div class="field"><label for="who">Player</label><select id="who">${[...active].sort((a, b) => a.name.localeCompare(b.name)).map(p => `<option value="${p.i}">${esc(p.name)}</option>`).join("")}</select></div><div id="card"></div></div>`);
+  `<div class="lookup"><div class="field"><label for="who">Player</label><select id="who"><option value="">Choose a player</option>${[...active].sort((a, b) => a.name.localeCompare(b.name)).map(p => `<option value="${p.i}">${esc(p.name)}</option>`).join("")}</select></div><div id="card"></div></div>`);
 
 // ---------- song lookup ----------
 topArtists = top(count(S, s => s.lead), 6);
 addSection("songs", "Song lookup", "Song lookup", "Has it been picked before?",
   "Type a song or an artist to see if it has come up in any league, who picked it, and how it did.",
-  `<div class="lookup"><div class="field"><label for="q">Song or artist</label><input type="search" id="q" autocomplete="off" placeholder="Try a song or artist"></div><div class="qchips">${[...(repeats[0] ? [plain(repeats[0][0].title)] : []), ...topArtists.slice(0, 5).map(a => a[0])].map(t => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div><div id="hits" class="results"></div></div>`);
+  `<div class="lookup"><div class="field"><label for="q">Song or artist</label><form id="qform" role="search"><input type="search" id="q" list="qlist" autocomplete="off" placeholder="Start typing a song or artist"></form><datalist id="qlist">${[...songOptions().keys()].map(o => `<option value="${esc(o)}"></option>`).join("")}</datalist></div><div class="qchips">${[...(repeats[0] ? [plain(repeats[0][0].title)] : []), ...topArtists.slice(0, 5).map(a => a[0])].map(t => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div><div id="hits" class="results"></div></div>`);
 
 // ---------- champions ----------
 {
@@ -417,7 +451,7 @@ addSection("songs", "Song lookup", "Song lookup", "Has it been picked before?",
     return `<article class="lg"><div class="no"><span>No. ${l.i + 1}</span><span>${dateFmt(l.start)} · ${plural(l.players.length, "player")}</span></div>
       <div class="nm"><a href="${leagueUrl(l)}" target="_blank" rel="noopener">${esc(l.name)}</a></div>
       <div class="rounds-line">${esc(l.rounds.slice(0, 3).map(r => R[r].name).join(" · "))}${l.rounds.length > 3 ? ` · +${l.rounds.length - 3} more` : ""}</div>
-      ${c ? `<div class="champ"><b>${esc(c.name)} ${c.titles > 1 ? `<span class="chip">${c.titles}× champ</span>` : ""}</b><span class="num">${n0(l.standings[0][1])} pts</span></div>
+      ${c ? `<div class="champ"><b class="withav">${av(c.i)}<span>${esc(c.name)}</span> ${c.titles > 1 ? `<span class="chip">${c.titles}× champ</span>` : ""}</b><span class="num">${n0(l.standings[0][1])} pts</span></div>
       <div class="rounds-line">${l.co ? "Tied for first" : `+${n0(l.margin)} on ${esc(P[runner[0]])}`}</div>` : `<div class="rounds-line">No votes yet</div>`}
       <button type="button" class="link" data-league="${l.i}" aria-expanded="false">Show standings and playlists</button><div class="standings" hidden></div></article>`;
   }).join("");
@@ -450,20 +484,20 @@ addSection("songs", "Song lookup", "Song lookup", "Has it been picked before?",
 // ---------- best and worst ----------
 {
   const songMeta = s => songLine(s);
-  const hiL = rankList(sortedScore.slice(0, 10), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), img: s => s });
-  const loL = rankList(sortedScore.slice(-10).reverse(), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), cls: s => s.score < 0 ? "neg" : "", img: s => s });
-  const liked = [...S].sort((a, b) => b.upvoters - a.upvoters || b.up - a.up).slice(0, 10);
-  const hated = [...S].filter(s => s.downvoters).sort((a, b) => b.downvoters - a.downvoters || a.score - b.score).slice(0, 10);
+  const hiL = rankList(sortedScore.slice(0, 8), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), img: s => s });
+  const loL = rankList(sortedScore.slice(-8).reverse(), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), cls: s => s.score < 0 ? "neg" : "", img: s => s });
+  const liked = [...S].sort((a, b) => b.upvoters - a.upvoters || b.up - a.up).slice(0, 8);
+  const hated = [...S].filter(s => s.downvoters).sort((a, b) => b.downvoters - a.downvoters || a.score - b.score).slice(0, 8);
   const share = s => { const l = L[s.league]; const v = R[s.round].voters - (s.voted ? 1 : 0); return v > 0 && l.up ? s.up / (v * l.up) : 0; };
-  const sharers = [...S].filter(s => R[s.round].voters >= 5).sort(by(share)).slice(0, 10);
+  const sharers = [...S].filter(s => R[s.round].voters >= 5).sort(by(share)).slice(0, 8);
   const lh = S.filter(s => s.upvoters >= 3 && s.downvoters >= 3 && Math.min(s.upvoters, s.downvoters) / Math.max(s.upvoters, s.downvoters) >= 0.6)
-    .sort((a, b) => Math.min(b.upvoters, b.downvoters) - Math.min(a.upvoters, a.downvoters) || (a.upvoters + a.downvoters < b.upvoters + b.downvoters ? 1 : -1)).slice(0, 10);
+    .sort((a, b) => Math.min(b.upvoters, b.downvoters) - Math.min(a.upvoters, a.downvoters) || (a.upvoters + a.downvoters < b.upvoters + b.downvoters ? 1 : -1)).slice(0, 8);
   const lhMax = Math.max(1, ...lh.map(s => Math.max(s.upvoters, s.downvoters)));
   const lhHtml = lh.length ? `<div class="legend"><span><i style="width:12px;height:12px;border-radius:3px;background:var(--up)"></i>Upvoted by</span><span><i style="width:12px;height:12px;border-radius:3px;background:var(--down)"></i>Downvoted by</span></div>` + lh.map(s => `<div class="lhrow"><div><div class="t">${esc(plain(s.title))}</div><div class="m">${songMeta(s)}</div></div>
-    <div class="lh"><div class="l"><span style="width:${s.upvoters / lhMax * 100}%"></span></div><span class="num pos-v">${s.upvoters}</span><span class="num neg" style="text-align:right">${s.downvoters}</span><div class="r"><span style="width:${s.downvoters / lhMax * 100}%"></span></div></div></div>`).join("") : `<p class="empty">No song split the room evenly enough.</p>`;
+    <div class="lh"><div class="l"><span class="num pos-v">${s.upvoters}</span><i style="--w:${s.upvoters / lhMax}" data-tip="${s.upvoters} people upvoted"></i></div><div class="r"><i style="--w:${s.downvoters / lhMax}" data-tip="${s.downvoters} people downvoted"></i><span class="num neg">${s.downvoters}</span></div></div></div>`).join("") : `<p class="empty">No song split the room evenly enough.</p>`;
   const body = `<div class="grid2">
-    ${panel("Highest scores", "Top 10 songs by points", hiL)}
-    ${panel("Lowest scores", "Bottom 10 songs, after downvotes", loL)}
+    ${panel("Highest scores", "Top 8 songs by points", hiL)}
+    ${panel("Lowest scores", "Bottom 8 songs, after downvotes", loL)}
     ${panel("Everybody liked this one", "Most different people giving it an upvote", rankList(liked, { title: s => esc(plain(s.title)), meta: songMeta, value: s => s.upvoters + " ppl", bar: s => s.upvoters }))}
     ${panel("Everybody hated this one", "Most different people giving it a downvote", rankList(hated, { title: s => esc(plain(s.title)), meta: songMeta, value: s => s.downvoters + " ppl", bar: s => -s.downvoters, cls: () => "neg" }))}
     ${panel("Best scoring", "Share of the maximum possible upvote points", rankList(sharers, { title: s => esc(plain(s.title)), meta: songMeta, value: s => pct(share(s)), bar: s => share(s), max: 1 }))}
@@ -491,8 +525,8 @@ if (withYear.length > S.length * 0.3) {
     ${panel("Which decades finish best", "Average finish, where 100% is first and 0% is last in the round", rankList(decScore, { title: x => x.d, meta: x => plural(x.n, "song"), value: x => pct(x.avg), bar: x => x.avg, max: 1 }))}
     ${panel("Oldest songs picked", "Earliest release year found", rankList(old, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => s.year, img: s => s }))}
     ${panel("Newest songs picked", "Latest release year found", rankList(nu, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => s.year, img: s => s }))}
-    ${panel("Lives in the past", `Oldest average release year (${D.minSongs}+ songs)`, rankList([...pAvg].sort(by(x => x.avg, 1)).slice(0, 6), { title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
-    ${panel("Keeps up with new releases", "Newest average release year", rankList([...pAvg].sort(by(x => x.avg)).slice(0, 6), { title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
+    ${panel("Lives in the past", `Oldest average release year (${D.minSongs}+ songs)`, rankList([...pAvg].sort(by(x => x.avg, 1)).slice(0, 6), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
+    ${panel("Keeps up with new releases", "Newest average release year", rankList([...pAvg].sort(by(x => x.avg)).slice(0, 6), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
   </div>`;
   addSection("years", "Release years", "Release years", `The music skews around ${medY}`,
     `The average song picked was released in ${avgY}, and the median is ${medY}. Release years were found for ${n0(withYear.length)} of ${n0(S.length)} picks (${pct(withYear.length / S.length)}).`,
@@ -503,15 +537,16 @@ if (withYear.length > S.length * 0.3) {
 if (withGenre.length > S.length * 0.3) {
   const gc = count(withGenre, s => s.genre);
   const gl = top(gc, 20).filter(([g, n]) => n >= 3);
-  const gScore = gl.filter(([g, n]) => n >= 10).map(([g, n]) => ({ g, n, avg: mean(withGenre.filter(s => s.genre === g).map(s => s.fin)) })).sort(by(x => x.avg));
+  const gl10 = gl.slice(0, 10);
+  const gScore = gl.filter(([g, n]) => n >= 10).map(([g, n]) => ({ g, n, avg: mean(withGenre.filter(s => s.genre === g).map(s => s.fin)) })).sort(by(x => x.avg)).slice(0, 10);
   const loyal = active.map(p => { const gs = p.songs.filter(s => s.genre); const t = top(count(gs, s => s.genre), 1)[0]; return t && gs.length >= 20 ? { p, g: t[0], n: t[1], of: gs.length, sh: t[1] / gs.length } : null; }).filter(Boolean).sort(by(x => x.sh)).slice(0, 8);
   const definers = gl.slice(0, 12).map(([g]) => `<div class="panel"><h3 style="font-size:17px">${esc(g)}</h3><p class="sub">${top(count(withGenre.filter(s => s.genre === g), s => s.lead), 3).map(([a, n]) => `${esc(a)} <span class="num">${n}</span>`).join(" · ")}</p></div>`).join("");
   const body = `<div class="grid2">
-    ${panel("Most-picked genres", "Share of song picks, by the artist's main genre", rankList(gl, { title: x => esc(x[0]), meta: x => plural(x[1], "song"), value: x => pct(x[1] / withGenre.length), bar: x => x[1] }))}
+    ${panel("Most-picked genres", "Share of song picks, by the artist's main genre", rankList(gl10, { title: x => esc(x[0]), meta: x => plural(x[1], "song"), value: x => pct(x[1] / withGenre.length), bar: x => x[1] }))}
     ${panel("Which genres finish best", "Average finish in the round, 10+ songs", rankList(gScore, { title: x => esc(x.g), meta: x => plural(x.n, "song"), value: x => pct(x.avg), bar: x => x.avg, max: 1 }))}
   </div>
   <h3 style="font:700 20px var(--display);margin:44px 0 14px">Who defines each genre</h3><div class="grid3" style="gap:4px 36px">${definers}</div>
-  ${loyal.length ? `<div class="grid2" style="margin-top:36px">${panel("One-genre loyalists", "Highest share of a player's picks in one genre, 20+ songs", rankList(loyal, { title: x => esc(x.p.name), meta: x => `${esc(x.g)} · ${x.n} of ${x.of} songs`, value: x => pct(x.sh), bar: x => x.sh, max: 1 }))}</div>` : ""}`;
+  ${loyal.length ? `<div class="grid2" style="margin-top:36px">${panel("One-genre loyalists", "Highest share of a player's picks in one genre, 20+ songs", rankList(loyal, { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${esc(x.g)} · ${x.n} of ${x.of} songs`, value: x => pct(x.sh), bar: x => x.sh, max: 1 }))}</div>` : ""}`;
   const g0 = gl[0], best = gScore[0];
   addSection("genres", "Genres", "Genres", "What the leagues listen to",
     `${esc(g0[0])} is the most-picked genre at ${pct(g0[1] / withGenre.length)} of picks${best ? `, and ${esc(best.g)} songs finish best on average` : ""}. Genres were found for ${n0(withGenre.length)} of ${n0(S.length)} picks.`,
@@ -527,8 +562,8 @@ if (withLen.length > S.length * 0.3) {
   const body = `<div class="grid2">
     ${panel("Longest songs picked", "Each song counted once", rankList(long, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => mmss(s.ms), img: s => s }))}
     ${panel("Shortest songs picked", "Each song counted once", rankList(short, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => mmss(s.ms), img: s => s }))}
-    ${panel("Picks the shortest songs", `How much shorter their average is than the overall average (${D.minSongs}+ songs)`, rankList([...pl].sort(by(x => x.d, 1)).slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d, cls: () => "" }))}
-    ${panel("Picks the longest songs", "How much longer their average is than the overall average", rankList([...pl].sort(by(x => x.d)).slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d }))}
+    ${panel("Picks the shortest songs", `How much shorter their average is than the overall average (${D.minSongs}+ songs)`, rankList([...pl].sort(by(x => x.d, 1)).slice(0, 6), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d, cls: () => "" }))}
+    ${panel("Picks the longest songs", "How much longer their average is than the overall average", rankList([...pl].sort(by(x => x.d)).slice(0, 6), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d }))}
   </div>`;
   addSection("length", "Song length", "Song length", `The average pick runs ${mmss(avg)}`,
     `The average song is ${mmss(avg)} and the median is ${mmss(med)}. The longest pick runs ${mmss(long[0].ms)} and the shortest is ${mmss(short[0].ms)}. Lengths were found for ${n0(withLen.length)} of ${n0(S.length)} picks.`, body);
@@ -536,34 +571,33 @@ if (withLen.length > S.length * 0.3) {
 
 // ---------- repeats ----------
 {
-  const r5 = repeats.slice(0, 12);
-  const arts = top(count(S, s => s.lead), 12);
+  const r5 = repeats.slice(0, 8);
+  const arts = top(count(S, s => s.lead), 8);
   const head = repeats.length ? (() => { const n = repeats[0].length; const t = repeats.filter(g => g.length === n); return t.length > 1 ? `${t.length} songs were picked ${n} times` : `“${esc(plain(t[0][0].title))}” was picked ${n} times`; })() : "No song has been picked twice";
   const lede = repeats.length ? `${plural(repeats.length, "song")} came up more than once. ` + (() => { const n = repeats[0].length; const t = repeats.filter(g => g.length === n); return `${listNames(t.slice(0, 4).map(g => "“" + esc(plain(g[0].title)) + "”"))} ${t.length > 1 ? "each " : ""}came up ${n} times.`; })() : "";
   const copy = new Map();
   for (const g of repeats) { const sorted = [...g].sort((a, b) => a.round - b.round); for (const s of sorted.slice(1)) copy.set(s.by, (copy.get(s.by) || 0) + 1); }
-  const body = `<div class="grid2">
+  const body = `<div class="grid3">
     ${panel("Most repeated songs", "Times submitted", rankList(r5, { title: g => esc(plain(g[0].title)), meta: g => esc(g[0].lead) + " · " + listNames([...new Set(g.map(s => P[s.by]))].map(esc)), value: g => g.length + "×", bar: g => g.length, img: g => g[0] }))}
     ${panel("Most submitted artists", "Songs submitted across all leagues", rankList(arts, { title: a => esc(a[0]), meta: a => plural(new Set(S.filter(s => s.lead === a[0]).map(s => s.by)).size, "different player"), value: a => a[1], bar: a => a[1] }))}
-    ${copy.size ? panel("Didn't check the archive", "Songs a player submitted after someone already had", rankList(top(copy, 6), { title: x => esc(P[x[0]]), meta: () => "repeat submissions", value: x => x[1], bar: x => x[1] })) : ""}
+    ${copy.size ? panel("Didn't check the archive", "Songs a player submitted after someone already had", rankList(top(copy, 8), { pi: x => x[0], title: x => esc(P[x[0]]), meta: () => "repeat submissions", value: x => x[1], bar: x => x[1] })) : ""}
   </div>`;
   addSection("repeats", "Repeats", "Déjà vu", head, lede, body, "Songs match on title and lead artist, ignoring remaster and version tags.");
 }
 
 // ---------- top 3 ----------
 {
-  const pod = [...active].filter(p => p.pod[0] + p.pod[1] + p.pod[2]).sort((a, b) => (b.pod[0] + b.pod[1] + b.pod[2]) - (a.pod[0] + a.pod[1] + a.pod[2]) || b.pod[0] - a.pod[0]).slice(0, 12);
+  const pod = [...active].filter(p => p.pod[0] + p.pod[1] + p.pod[2]).sort((a, b) => (b.pod[0] + b.pod[1] + b.pod[2]) - (a.pod[0] + a.pod[1] + a.pod[2]) || b.pod[0] - a.pod[0]).slice(0, 8);
   const mx = Math.max(...pod.map(p => p.pod[0] + p.pod[1] + p.pod[2]));
-  const lastL = [...active].filter(p => p.songs.length >= D.minSongs).map(p => ({ p, r: p.last / p.songs.length })).sort(by(x => x.r)).slice(0, 6);
+  const lastL = [...active].filter(p => p.songs.length >= D.minSongs).map(p => ({ p, r: p.last / p.songs.length })).sort(by(x => x.r)).slice(0, 8);
   const wl = [...active].filter(p => p.wins).sort((a, b) => b.wins - a.wins || b.ties - a.ties).slice(0, 8);
   const never = active.filter(p => p.songs.length >= D.minSongs && !p.last).map(p => p.name);
-  const podHtml = `<div class="legend"><span><span class="sw" style="background:var(--pod-1)"></span>1st</span><span><span class="sw" style="background:var(--pod-2)"></span>2nd</span><span><span class="sw" style="background:var(--pod-3)"></span>3rd</span></div><ol class="rank">${pod.map((p, i) => { const t = p.pod[0] + p.pod[1] + p.pod[2]; return `<li><span class="pos">${i + 1}</span><span class="t">${esc(p.name)}</span><span class="val">${t}</span><span class="stack" style="width:${t / mx * 100}%">${p.pod.map((c, k) => c ? `<span style="flex:${c};background:var(--pod-${k + 1})" data-tip="${esc(p.name)}: ${c} × ${ordinal(k + 1)}"></span>` : "").join("")}</span></li>`; }).join("")}</ol>`;
-  const body = `<div class="grid2">
+  const podHtml = `<div class="legend"><span><span class="sw" style="background:var(--pod-1)"></span>1st</span><span><span class="sw" style="background:var(--pod-2)"></span>2nd</span><span><span class="sw" style="background:var(--pod-3)"></span>3rd</span></div><ol class="rank">${pod.map((p, i) => { const t = p.pod[0] + p.pod[1] + p.pod[2]; return `<li><span class="pos">${i + 1}</span><span class="t withav">${av(p.i)}<span>${esc(p.name)}</span></span><span class="val">${t}</span><span class="stack" style="width:${t / mx * 100}%">${p.pod.map((c, k) => c ? `<span style="flex:${c};background:var(--pod-${k + 1})" data-tip="${esc(p.name)}: ${c} × ${ordinal(k + 1)}"></span>` : "").join("")}</span></li>`; }).join("")}</ol>`;
+  const body = `<div class="grid3">
     ${panel("Top-3 finishes", "Songs that placed 1st, 2nd, or 3rd in their round. Ties count.", podHtml)}
-    <div class="panel" style="display:grid;gap:40px;align-content:start">
-    ${panel("Outright round wins", "First place with no tie", rankList(wl, { title: p => esc(p.name), meta: p => p.ties ? `plus ${plural(p.ties, "shared first")}` : "no shared firsts", value: p => p.wins, bar: p => p.wins }))}
-    ${panel("Finds the bottom most often", `Share of songs that finished last (${D.minSongs}+ songs)`, rankList(lastL, { title: x => esc(x.p.name), meta: x => `${x.p.last} of ${x.p.songs.length} songs`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
-    </div></div>`;
+    ${panel("Outright round wins", "First place with no tie", rankList(wl, { pi: p => p.i, title: p => esc(p.name), meta: p => p.ties ? `plus ${plural(p.ties, "shared first")}` : "no shared firsts", value: p => p.wins, bar: p => p.wins }))}
+    ${panel("Finds the bottom most often", `Share of songs that finished last (${D.minSongs}+ songs)`, rankList(lastL, { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${x.p.last} of ${x.p.songs.length} songs`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
+    </div>`;
   addSection("top3", "Top 3", "Players", `${esc(podLead.name)} makes the podium most`,
     `${esc(podLead.name)} has ${podLead.pod[0] + podLead.pod[1] + podLead.pod[2]} top-3 finishes. ${esc(winLead.name)} has the most outright round wins, with ${winLead.wins}.` + (never.length ? ` ${listNames(never.map(esc))} ${never.length > 1 ? "have" : "has"} never come in last.` : ""), body, "Last place counts include ties.");
 }
@@ -577,10 +611,10 @@ if (withLen.length > S.length * 0.3) {
   for (const l of LV) for (const [pi, t] of l.standings) { const n = S.filter(s => s.league === l.i && s.by === pi).length; if (n >= 4) singles.push({ p: players[pi], l, t, n, fin: mean(S.filter(s => s.league === l.i && s.by === pi).map(s => s.fin).filter(x => x != null)) }); }
   singles.sort(by(x => x.fin));
   const body = `<div class="grid2">
-    ${panel("Total points", `All ${LV.length} leagues`, rankList(tot, { title: p => esc(p.name), meta: p => `${plural(p.leagues.size, "league")} · ${plural(p.songs.length, "song")}`, value: p => n0(p.total), bar: p => p.total }))}
-    ${panel("Average finish", `Where a player's songs land in the round, ${D.minSongs}+ songs. 100% is always first.`, rankList(fin, { title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => pct(p.fin), bar: p => p.fin, max: 1 }))}
-    ${panel("Points per song", `Players with ${D.minSongs} or more songs`, rankList(avg, { title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => n1(p.avg), bar: p => p.avg }))}
-    ${panel("Best single league", "Average finish in one league, 4+ songs", rankList(singles.slice(0, 10), { title: x => esc(x.p.name), meta: x => `${esc(x.l.name)} · ${n0(x.t)} pts from ${x.n} songs`, value: x => pct(x.fin), bar: x => x.fin, max: 1 }))}
+    ${panel("Total points", `All ${LV.length} leagues`, rankList(tot, { pi: p => p.i, title: p => esc(p.name), meta: p => `${plural(p.leagues.size, "league")} · ${plural(p.songs.length, "song")}`, value: p => n0(p.total), bar: p => p.total }))}
+    ${panel("Average finish", `Where a player's songs land in the round, ${D.minSongs}+ songs. 100% is always first.`, rankList(fin, { pi: p => p.i, title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => pct(p.fin), bar: p => p.fin, max: 1 }))}
+    ${panel("Points per song", `Players with ${D.minSongs} or more songs`, rankList(avg, { pi: p => p.i, title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => n1(p.avg), bar: p => p.avg }))}
+    ${panel("Best single league", "Average finish in one league, 4+ songs", rankList(singles.slice(0, 10), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${esc(x.l.name)} · ${n0(x.t)} pts from ${x.n} songs`, value: x => pct(x.fin), bar: x => x.fin, max: 1 }))}
   </div>`;
   addSection("overall", "Overall", "Best overall", `${esc(tot[0].name)} leads on total points`,
     `Total points reward showing up. Points per song reward picking well, but leagues give out very different budgets. Average finish is the fairest single measure: it only asks where each song placed in its round.${fin[0] ? ` ${esc(fin[0].name)} leads on average finish at ${pct(fin[0].fin)}.` : ""}`, body);
@@ -594,13 +628,13 @@ if (withLen.length > S.length * 0.3) {
   for (const p of active) dv.set(p.i, p.given.filter(v => v[2] < 0).length);
   const downShare = active.filter(p => p.given.length >= 100).map(p => ({ p, n: dv.get(p.i), r: dv.get(p.i) / p.given.length })).sort(by(x => x.r));
   const soft = [...voteAvg].sort(by(x => x.avg)).slice(0, 6);
-  const harshL = [...voteAvg].sort(by(x => x.avg, 1)).slice(0, 6);
+  const harshL = [...voteAvg].sort(by(x => x.avg, 1)).slice(0, 8);
   const mu = top(maxUp, 1)[0], md = top(maxDown, 1)[0];
   const body = `<div class="grid2">
-    ${panel("Most max upvotes", "Votes at the league's top single vote", rankList(top(maxUp, 8), { title: x => esc(P[x[0]]), meta: () => "maxed-out upvotes", value: x => x[1], bar: x => x[1] }))}
-    ${panel("Most max downvotes", "Leagues with a −1 downvote cap are left out", rankList(top(maxDown, 8), { title: x => esc(P[x[0]]), meta: () => "maxed-out downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
-    ${panel("Harshest voters", "Lowest average vote given, 100+ votes", rankList(harshL, { title: x => esc(x.p.name), meta: x => plural(x.n, "vote"), value: x => n1(x.avg), bar: x => x.avg }))}
-    ${panel("Reaches for the downvote", "Share of their votes that are downvotes", rankList(downShare.slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} of ${x.p.given.length} votes`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
+    ${panel("Most max upvotes", "Votes at the league's top single vote", rankList(top(maxUp, 8), { pi: x => x[0], title: x => esc(P[x[0]]), meta: () => "maxed-out upvotes", value: x => x[1], bar: x => x[1] }))}
+    ${panel("Most max downvotes", "Leagues with a −1 downvote cap are left out", rankList(top(maxDown, 8), { pi: x => x[0], title: x => esc(P[x[0]]), meta: () => "maxed-out downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
+    ${panel("Harshest voters", "Lowest average vote given, 100+ votes", rankList(harshL, { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => plural(x.n, "vote"), value: x => n1(x.avg), bar: x => x.avg }))}
+    ${panel("Reaches for the downvote", "Share of their votes that are downvotes", rankList(downShare.slice(0, 8), { pi: x => x.p.i, title: x => esc(x.p.name), meta: x => `${x.n} of ${x.p.given.length} votes`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
   </div>`;
   const same = mu && md && mu[0] === md[0];
   addSection("voters", "Extreme voters", "Voting", same ? `${esc(P[mu[0]])} votes hardest in both directions` : `${esc(P[mu ? mu[0] : harshL[0].p.i])} goes all in`,
@@ -652,12 +686,12 @@ if (withLen.length > S.length * 0.3) {
   const heat = core.length >= 4 ? `<h3 style="font:700 20px var(--display);margin:44px 0 4px">Who votes for whom</h3><p class="sub" style="color:var(--ink-3);font-size:13.5px;margin:0 0 14px">Each row is a voter, each column a submitter. Blue means the voter gives that person more than a fair share of their upvotes; pink means less. Players with 30+ songs.</p>
     <div class="heatwrap"><table class="heat"><thead><tr><th></th>${core.map(p => `<th scope="col">${esc(p.name)}</th>`).join("")}</tr></thead><tbody>${core.map(a => `<tr><th scope="row">${esc(a.name)}</th>${core.map(b => cell(a.i, b.i)).join("")}</tr>`).join("")}</tbody></table></div>
     <div class="diverge"><span>Half a fair share</span><span class="ramp"></span><span>Double</span></div>` : "";
-  const grudges = top(downs, 8);
+  const grudges = top(downs, 6);
   const body = `<div class="grid2">
-    ${panel("Biggest mutual fans", "Both give each other well over a fair share of upvotes", rankList(fans, { title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.m), bar: x => x.m }))}
-    ${panel("Not each other's cup of tea", "Neither gives the other much", rankList(cold, { title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.M) }))}
-    ${panel("One-way crushes", "The biggest gap between how much one gives and gets back", rankList(oneway.slice(0, 6), { title: x => `${esc(P[x.a])} → ${esc(P[x.b])}`, meta: x => `gives ${x2(x.ab)}, gets ${x2(x.ba)} back`, value: x => "+" + n1(x.d) }))}
-    ${panel("Grudges", "Most downvotes from one player to another", rankList(grudges, { title: x => { const [a, b] = x[0].split(">"); return `${esc(P[a])} → ${esc(P[b])}`; }, meta: () => "downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
+    ${panel("Biggest mutual fans", "Both give each other well over a fair share of upvotes", rankList(fans, { pi: x => [x.a, x.b], title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.m), bar: x => x.m }))}
+    ${panel("Not each other's cup of tea", "Neither gives the other much", rankList(cold, { pi: x => [x.a, x.b], title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.M) }))}
+    ${panel("One-way crushes", "The biggest gap between how much one gives and gets back", rankList(oneway.slice(0, 6), { pi: x => [x.a, x.b], title: x => `${esc(P[x.a])} → ${esc(P[x.b])}`, meta: x => `gives ${x2(x.ab)}, gets ${x2(x.ba)} back`, value: x => "+" + n1(x.d) }))}
+    ${panel("Grudges", "Most downvotes from one player to another", rankList(grudges, { pi: x => x[0].split(">").map(Number), title: x => { const [a, b] = x[0].split(">"); return `${esc(P[a])} → ${esc(P[b])}`; }, meta: () => "downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
   </div>${heat}`;
   const f0 = fans[0];
   addSection("mutual", "Mutual admiration", "Mutual admiration", f0 ? `${esc(P[f0.a])} and ${esc(P[f0.b])} are each other's biggest fans` : "Mutual admiration",
@@ -673,10 +707,10 @@ if (withLen.length > S.length * 0.3) {
   const pen = [...miss].sort(by(s => s.lost)).filter(s => s.lost > 0).slice(0, 8);
   const never = active.filter(p => !p.missed).sort(by(p => p.songs.length)).slice(0, 8);
   const body = `<div class="grid2">
-    ${panel("Most forgotten rounds", "Rounds submitted without voting", rankList(pm, { title: p => esc(p.name), meta: p => `${pct(p.missed / p.songs.length)} of their rounds`, value: p => p.missed, bar: p => p.missed }))}
+    ${panel("Most forgotten rounds", "Rounds submitted without voting", rankList(pm, { pi: p => p.i, title: p => esc(p.name), meta: p => `${pct(p.missed / p.songs.length)} of their rounds`, value: p => p.missed, bar: p => p.missed }))}
     ${panel("Biggest penalties", "Songs that lost the most upvotes by missing the vote", pen.length ? rankList(pen, { title: s => esc(plain(s.title)), meta: s => songLine(s, { league: true }), value: s => "−" + s.lost, cls: () => "neg" }) : `<p class="empty">Nobody has lost points this way.</p>`)}
     ${panel("By league", "Songs from players who didn't vote", rankList(lm, { title: x => esc(L[x[0]].name), meta: x => plural(L[x[0]].rounds.length, "round"), value: x => x[1], bar: x => x[1] }))}
-    ${panel("Never forgot", "Players with the most songs and zero missed votes", never.length ? rankList(never, { title: p => esc(p.name), meta: p => plural(p.leagues.size, "league"), value: p => p.songs.length, bar: p => p.songs.length }) : `<p class="empty">Everyone has missed at least once.</p>`)}
+    ${panel("Never forgot", "Players with the most songs and zero missed votes", never.length ? rankList(never, { pi: p => p.i, title: p => esc(p.name), meta: p => plural(p.leagues.size, "league"), value: p => p.songs.length, bar: p => p.songs.length }) : `<p class="empty">Everyone has missed at least once.</p>`)}
   </div>`;
   addSection("forgot", "Forgot to vote", "Attendance", "You forgot to vote",
     `If you don't vote in a round, your upvotes don't count and your song's score becomes minus its downvotes. Every score on this page uses that rule. ${plural(miss.length, "song")} missed the vote, giving up ${n0(lost)} upvote points.`, body);
@@ -685,7 +719,7 @@ if (withLen.length > S.length * 0.3) {
 // ---------- awards ----------
 {
   const aw = [];
-  const add = (k, w, why) => w && aw.push({ k, w, why });
+  const add = (k, w, why) => w && aw.push({ k, w, why, pi: P.indexOf(w) });
   const tl = [...active].sort((a, b) => b.titles - a.titles || b.total - a.total)[0];
   add("Dynasty", tl.name, `${plural(tl.titles, "league title")}, the most of anyone.`);
   add("Podium regular", podLead.name, `${podLead.pod[0] + podLead.pod[1] + podLead.pod[2]} top-3 finishes.`);
@@ -706,7 +740,7 @@ if (withLen.length > S.length * 0.3) {
   const iron = [...active].sort(by(p => p.leagues.size))[0];
   add("Iron player", iron.name, `Played ${plural(iron.leagues.size, "league")}.`);
   addSection("awards", "Awards", "Awards", "The Music League awards", "One winner per category, pulled from the stats above.",
-    `<div class="awards">${aw.map(a => `<div class="award"><span class="k">${esc(a.k)}</span><span class="w">${esc(a.w)}</span><span class="why">${esc(a.why)}</span></div>`).join("")}</div>`);
+    `<div class="awards">${aw.map(a => `<div class="award"><span class="k">${esc(a.k)}</span><span class="w withav">${av(a.pi, "lg")}<span>${esc(a.w)}</span></span><span class="why">${esc(a.why)}</span></div>`).join("")}</div>`);
 }
 
 // ---------- render ----------
@@ -714,13 +748,10 @@ $("#main").innerHTML = sections.map(s => s.html).join("");
 $("#toc").innerHTML = sections.map(s => `<a href="#${s.id}">${s.nav}</a>`).join("");
 $("#foot").innerHTML = `<p>Built on ${esc(D.built)} from the full round and vote data for ${mode === "all" ? "all " : ""}${LV.length} ${mode === "all" ? "" : MODES[mode].toLowerCase() + " "}leagues: ${n0(RV.length)} rounds, ${n0(S.length)} submissions, and ${n0(nVotes)} votes.</p><p>Songs finish in the order of their round score; tied songs share the better place. Release years, lengths and genres come from Spotify and MusicBrainz and may have gaps.</p>`;
 // lookups and nav follow the new sections
-const who = $("#who");
-let start = null;
-try { start = localStorage.getItem("ml-player"); } catch (e) {}
-if (start == null || !players[+start] || !players[+start].songs.length) start = String([...active].sort(by(p => p.leagues.size * 1000 + p.songs.length))[0].i);
-who.value = start;
-renderPlayer(+start);
-$("#q").value = lastQ ?? (repeats[0] ? plain(repeats[0][0].title) : (topArtists[0] || [""])[0]);
+if (curPlayer != null && !players[curPlayer].songs.length) curPlayer = null;
+$("#who").value = curPlayer ?? "";
+renderPlayer(curPlayer);
+$("#q").value = lastQ || "";
 songSearch();
 document.querySelectorAll("#seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
 firstPaint = false;
@@ -739,11 +770,15 @@ document.addEventListener("click", e => {
     b.textContent = box.hidden ? "Show standings and playlists" : "Hide standings";
   }
   const q = e.target.closest("button[data-q]");
-  if (q) { $("#q").value = q.dataset.q; songSearch(); }
+  if (q) { $("#q").value = q.dataset.q; lastQ = q.dataset.q; songSearch(); }
 });
 
 // player card
 function renderPlayer(i) {
+  if (i == null) {
+    $("#card").innerHTML = `<p class="pick-hint">Pick a name above, or tap someone below.</p><div class="people">${[...active].sort((a, b) => a.name.localeCompare(b.name)).map(p => `<button type="button" class="person" data-player="${p.i}">${av(p.i)}<span>${esc(p.name)}</span></button>`).join("")}</div>`;
+    return;
+  }
   const p = players[i];
   const songs = p.songs;
   const bestS = [...songs].sort((a, b) => (b.fin ?? -1) - (a.fin ?? -1) || b.score - a.score).slice(0, 5);
@@ -765,7 +800,7 @@ function renderPlayer(i) {
   if (fan) parts.push(`biggest fan: <b>${esc(P[fan[0]])}</b> (${n0(fan[1])} pts given)`);
   if (fav) parts.push(`votes most for <b>${esc(P[fav[0]])}</b> (${n0(fav[1])} pts)`);
   const songItem = s => `<li><span class="pos">${s.rank}/${s.of}</span><span class="withcov">${cover(s)}<div><div class="t">${esc(plain(s.title))}</div><div class="m">${songLine(s, { noBy: true, league: true })}</div></div></span><span class="val ${s.score < 0 ? "neg" : ""}">${sgn(s.score)}</span></li>`;
-  $("#card").innerHTML = `<div class="card-head"><h3>${esc(p.name)}</h3><span class="eyebrow">${plural(lgs, "league")} · ${plural(songs.length, "song")}</span></div>
+  $("#card").innerHTML = `<div class="card-head">${av(i, "xl")}<h3>${esc(p.name)}</h3><span class="eyebrow">${plural(lgs, "league")} · ${plural(songs.length, "song")}</span></div>
     <div class="statgrid">
       <div class="stat"><b class="num">${n0(p.total)}</b><span>total points · #${rankAmong(active, x => x.total)} of ${active.length}</span></div>
       <div class="stat"><b class="num">${p.titles}</b><span>league ${p.titles === 1 ? "title" : "titles"}</span></div>
@@ -778,25 +813,38 @@ function renderPlayer(i) {
     <div class="grid2">
       ${panel("Best finishes", "Place in round · song", `<ol class="rank">${bestS.map(songItem).join("")}</ol>`)}
       ${panel("Worst finishes", "Place in round · song", `<ol class="rank">${worstS.map(songItem).join("")}</ol>`)}
-      ${panel("Rounds won", wins.length ? plural(wins.length, "round") + " in first place, ties included" : "No first places yet", wins.length ? `<ol class="rank">${wins.map(songItem).join("")}</ol>` : `<p class="empty">The next one, maybe.</p>`)}
-      ${panel("League by league", "Final place in each league", `<ol class="rank">${L.filter(l => p.leagues.has(l.i)).map(l => { const pos = l.standings.findIndex(x => x[0] === i); const t = l.standings[pos][1]; return `<li><span class="pos">${l.i + 1}</span><span class="t">${esc(l.name)}</span><span class="val">${ordinal(pos + 1)}</span><span class="m">${n0(t)} pts · of ${l.standings.length}</span></li>`; }).join("")}</ol>`)}
-    </div>`;
+      ${panel("Rounds won", wins.length ? plural(wins.length, "round") + " in first place, ties included" : "No first places yet", wins.length ? `<ol class="rank">${wins.slice(-5).reverse().map(songItem).join("")}</ol>${wins.length > 5 ? `<p class="more">Plus ${wins.length - 5} more, newest first.</p>` : ""}` : `<p class="empty">The next one, maybe.</p>`)}
+      ${panel("Biggest fans", "Who gives them the most upvote points", rankList(top(fanPts, 5), { pi: x => x[0], title: x => esc(P[x[0]]), meta: () => "points given", value: x => n0(x[1]), bar: x => x[1] }))}
+    </div>
+    <h4 class="sub-h">League by league</h4>
+    <div class="lgtiles">${L.filter(l => p.leagues.has(l.i)).map(l => { const pos = l.standings.findIndex(x => x[0] === i); const t = l.standings[pos][1]; return `<div class="lgtile ${pos === 0 ? "won" : ""}"><b>${ordinal(pos + 1)}</b><span class="of">of ${l.standings.length} · ${n0(t)} pts</span><span class="ln">${esc(l.name)}</span></div>`; }).join("")}</div>`;
 }
-document.addEventListener("change", e => { if (e.target.id === "who") { renderPlayer(+e.target.value); try { localStorage.setItem("ml-player", e.target.value); } catch (err) {} } });
+document.addEventListener("change", e => { if (e.target.id === "who") { curPlayer = e.target.value === "" ? null : +e.target.value; renderPlayer(curPlayer); } });
+document.addEventListener("click", e => { const b = e.target.closest("button[data-player]"); if (!b) return; curPlayer = +b.dataset.player; $("#who").value = String(curPlayer); renderPlayer(curPlayer); $("#card").scrollIntoView({ block: "nearest" }); });
 
 // song search
+function songOptions() {
+  const m = new Map();
+  for (const g of groups.values()) m.set(`${plain(g[0].title)} — ${g[0].lead}`, { song: g });
+  for (const g of groups.values()) if (!m.has(g[0].lead)) m.set(g[0].lead, { artist: g[0].lead });
+  songOpts = m;
+  return m;
+}
 function songSearch() {
-  const raw = $("#q").value.trim(), q = raw.toLowerCase();
+  const raw = (lastQ || "").trim(), q = raw.toLowerCase();
   const out = $("#hits");
-  if (q.length < 2) { out.innerHTML = `<p class="empty">Type at least two letters.</p>`; return; }
-  const hits = [...groups.values()].filter(g => g.some(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q)));
+  if (!raw) { out.innerHTML = `<p class="pick-hint">Pick a song or artist from the suggestions, or press Enter to search what you typed.</p>`; return; }
+  const opt = songOpts.get(raw);
+  const hits = opt && opt.song ? [opt.song] : opt && opt.artist ? [...groups.values()].filter(g => g[0].lead === opt.artist)
+    : [...groups.values()].filter(g => g.some(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q)));
   hits.sort((a, b) => b.length - a.length || a[0].title.localeCompare(b[0].title));
   if (!hits.length) { out.innerHTML = `<p class="empty">Nobody has picked anything matching “${esc(raw)}” yet. It's all yours.</p>`; return; }
   const total = hits.reduce((a, g) => a + g.length, 0);
   out.innerHTML = `<p class="sub" style="margin:0;color:var(--ink-2)">${plural(hits.length, "song")}, picked ${plural(total, "time")}.</p>` + hits.slice(0, 40).map(g => `<div class="songhit"><div class="withcov">${cover(g[0])}<div><h4>${esc(plain(g[0].title))} <small>${esc(g[0].artist)}${g[0].year ? " · " + g[0].year : ""}</small></h4></div></div>
     ${[...g].sort((a, b) => a.round - b.round).map(s => `<div class="pick"><span><b>${esc(P[s.by])}</b> <span class="m">· ${esc(roundName(s))} · ${esc(L[s.league].name)}</span></span><span class="num">${ordinal(s.rank)} of ${s.of} · ${sgn(s.score)}</span></div>`).join("")}</div>`).join("") + (hits.length > 40 ? `<p class="empty">Showing 40 of ${hits.length}. Keep typing to narrow it down.</p>` : "");
 }
-document.addEventListener("input", e => { if (e.target.id === "q") { lastQ = e.target.value; songSearch(); } });
+document.addEventListener("input", e => { if (e.target.id === "q" && (songOpts.has(e.target.value) || !e.target.value)) { lastQ = e.target.value; songSearch(); } });
+document.addEventListener("submit", e => { if (e.target.id === "qform") { e.preventDefault(); lastQ = $("#q").value; songSearch(); } });
 
 // nav highlight
 let navRaf = 0;
