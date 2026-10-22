@@ -348,7 +348,9 @@ const cover = s => s.img ? `<img class="cov" src="${esc(s.img)}" alt="" loading=
 
 const AV = D.avatars || [];
 const initials = n => (n.replace(/[^\p{L}\p{N} ]/gu, "").trim().split(/\s+/).map(w => w[0]).slice(0, 2).join("") || "?").toUpperCase();
-const av = (pi, cls = "") => pi == null || pi < 0 ? "" : AV[pi] ? `<img class="av ${cls}" src="${esc(AV[pi])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="av ${cls}" aria-hidden="true">${esc(initials(P[pi]))}</span>`;
+const avInit = (pi, cls) => `<span class="av ${cls}" aria-hidden="true">${esc(initials(P[pi]))}</span>`;
+// photos fall back to initials if they fail to load
+const av = (pi, cls = "") => pi == null || pi < 0 ? "" : AV[pi] ? `<img class="av ${cls}" src="${esc(AV[pi])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-init="${esc(initials(P[pi]))}" onerror="this.outerHTML='<span class=&quot;'+this.className+'&quot; aria-hidden=&quot;true&quot;>'+this.dataset.init+'</span>'">` : avInit(pi, cls);
 function rankList(items, { title, meta, value, bar, max, cls, img, pi }) {
   const mx = max ?? Math.max(...items.map(x => Math.abs(bar ? bar(x) : 0)), 1);
   return `<ol class="rank">${items.map((x, i) => {

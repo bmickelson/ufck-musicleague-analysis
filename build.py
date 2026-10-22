@@ -23,7 +23,9 @@ OUT = os.path.join(ROOT, "docs", "index.html")
 TEMPLATE = os.path.join(ROOT, "template.html")
 LEAGUES_FILE = os.path.join(ROOT, "leagues.json")
 SITE_FILE = os.path.join(ROOT, "site.json")
-AVATARS_FILE = os.path.join(ROOT, "avatars.json")  # optional {player id: photo url}
+AVATARS_FILE = os.path.join(ROOT, "avatars.json")  # optional {player id: photo url} overrides
+# Music League serves each player's profile photo (from Spotify) at a URL built from their id.
+AVATAR_URL = "https://musicleague-user-assets.b-cdn.net/users/{id}/images/profile?aspect_ratio=1%3A1&height=144&optimizer=image&quality=75&width=144"
 
 MIN_SONGS = 15  # minimum songs for per-song averages
 
@@ -234,7 +236,7 @@ def main():
         "site": site_cfg,
         "built": datetime.now().strftime("%B %-d, %Y"),
         "players": [pname[p] for p in pids],
-        "avatars": [avatars.get(p) for p in pids],
+        "avatars": [avatars.get(p) or AVATAR_URL.format(id=p) for p in pids],
         "leagues": leagues,
         "rounds": rounds,
         "subs": subs,
