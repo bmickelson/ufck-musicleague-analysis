@@ -1,0 +1,784 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Heavy Rotation</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column of "liner notes"; each section is a side of a record, ranked lists sit in paired columns that stack on phones. */
+:root {
+  --paper: #f3f4f8;
+  --sheet: #ffffff;
+  --ink: #161a2c;
+  --ink-2: #4a5068;
+  --ink-3: #7a8098;
+  --rule: #dfe1ea;
+  --wash: #e9ebf3;
+  --up: #2443d6;
+  --up-soft: #dfe4fb;
+  --down: #d1386c;
+  --down-soft: #f9dfe8;
+  --mid: #d9dbe4;
+  --pod-1: #1a2fa3;
+  --pod-2: #4f6bec;
+  --pod-3: #a3b2f6;
+  --display: "Bricolage Grotesque", "Avenir Next Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Figtree", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --radius: 10px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10121b; --sheet: #181b28; --ink: #eef0f8; --ink-2: #b4b9cf; --ink-3: #868ca6;
+    --rule: #2a2e40; --wash: #212536; --up: #8197ff; --up-soft: #252d55; --down: #ff7aa5; --down-soft: #46213a;
+    --mid: #343849; --pod-1: #a9b7ff; --pod-2: #6f85f5; --pod-3: #3a4bb0; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10121b; --sheet: #181b28; --ink: #eef0f8; --ink-2: #b4b9cf; --ink-3: #868ca6;
+  --rule: #2a2e40; --wash: #212536; --up: #8197ff; --up-soft: #252d55; --down: #ff7aa5; --down-soft: #46213a;
+  --mid: #343849; --pod-1: #a9b7ff; --pod-2: #6f85f5; --pod-3: #3a4bb0; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 16px/1.55 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--up); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--up); outline-offset: 2px; }
+.num, .mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.eyebrow { font: 600 12px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); }
+
+/* hero */
+header.hero { padding-block: 56px 28px; }
+.hero h1 { font: 800 clamp(56px, 11vw, 132px)/.86 var(--display); letter-spacing: -.035em; margin: 14px 0 18px; text-wrap: balance; }
+.hero h1 span { color: var(--up); }
+.hero p.tag { font-size: 20px; color: var(--ink-2); max-width: 34ch; margin: 0; text-wrap: balance; }
+.counts { display: flex; flex-wrap: wrap; gap: 8px 36px; margin-top: 32px; padding-top: 18px; border-top: 2px solid var(--ink); }
+.counts div { display: grid; }
+.counts b { font: 700 34px/1 var(--display); }
+.counts span { font: 600 11px/1.6 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+
+/* headline facts */
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; margin-block: 28px 8px; }
+.fact { background: var(--sheet); padding: 16px 18px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.fact .v { font: 700 21px/1.15 var(--display); overflow-wrap: anywhere; }
+.fact .s { color: var(--ink-2); font-size: 14px; }
+
+/* nav */
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--paper) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+nav.toc .navrow { display: flex; gap: 12px; align-items: center; padding-block: 10px; }
+nav.toc .links { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; min-width: 0; flex: 1; }
+.seg { display: flex; flex: none; background: var(--wash); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg:empty { display: none; }
+.seg button { all: unset; cursor: pointer; font: 600 13px/1 var(--body); color: var(--ink-2); padding: 7px 11px; border-radius: 999px; white-space: nowrap; }
+.seg button .num { font-size: 11px; color: var(--ink-3); margin-left: 3px; }
+.seg button[aria-pressed="true"] { background: var(--up); color: var(--sheet); }
+.seg button[aria-pressed="true"] .num { color: inherit; opacity: .75; }
+.seg button:focus-visible { outline: 2px solid var(--up); outline-offset: 2px; }
+@media (max-width: 640px) { nav.toc .navrow { flex-wrap: wrap; gap: 8px; } .seg { width: 100%; justify-content: space-between; } .seg button { flex: 1; text-align: center; } nav.toc .links { flex-basis: 100%; } }
+nav.toc a { flex: none; font: 600 13px/1 var(--body); color: var(--ink-2); text-decoration: none; padding: 8px 12px; border-radius: 999px; }
+nav.toc a:hover { background: var(--wash); color: var(--ink); }
+nav.toc a.on { background: var(--ink); color: var(--paper); }
+
+/* sections */
+section.side { padding-block: 64px 8px; scroll-margin-top: 56px; }
+.side > .wrap > header { display: grid; gap: 8px; margin-bottom: 28px; max-width: 70ch; }
+.side h2 { font: 800 clamp(32px, 5vw, 50px)/1 var(--display); letter-spacing: -.025em; margin: 0; text-wrap: balance; }
+.side header p { margin: 0; color: var(--ink-2); font-size: 17px; }
+.note { color: var(--ink-3); font-size: 13.5px; max-width: 72ch; margin: 14px 0 0; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 40px 48px; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: 32px 36px; }
+.panel { min-width: 0; }
+.panel h3 { font: 700 20px/1.2 var(--display); margin: 0; }
+.panel h3 + .sub { color: var(--ink-3); font-size: 13.5px; margin: 2px 0 14px; }
+
+/* ranked rows */
+ol.rank { list-style: none; margin: 0; padding: 0; display: grid; }
+ol.rank li { display: grid; grid-template-columns: 1.6em minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; padding: 9px 0; border-bottom: 1px solid var(--rule); }
+ol.rank li:last-child { border-bottom: 0; }
+ol.rank .pos { font: 600 12px var(--mono); color: var(--ink-3); }
+ol.rank .t { font-weight: 600; overflow-wrap: anywhere; }
+ol.rank .m { grid-column: 2; color: var(--ink-2); font-size: 13.5px; overflow-wrap: anywhere; }
+ol.rank .val { font: 600 15px var(--mono); font-variant-numeric: tabular-nums; text-align: right; grid-row: 1 / span 2; grid-column: 3; align-self: center; }
+.neg { color: var(--down); }
+.pos-v { color: var(--up); }
+.bar { grid-column: 2 / span 2; height: 6px; border-radius: 0 3px 3px 0; background: var(--up); margin-top: 4px; min-width: 2px; }
+.bar.neg-bar { background: var(--down); }
+.track { grid-column: 2 / span 2; background: var(--wash); border-radius: 3px; display: flex; }
+
+/* cover art */
+.cov { width: 40px; height: 40px; border-radius: 4px; object-fit: cover; background: var(--wash); flex: none; }
+.withcov { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.withcov > div { min-width: 0; }
+
+/* leagues */
+.leagues { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); gap: 14px; }
+.lg { background: var(--sheet); border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 8px; align-content: start; min-width: 0; }
+.lg .no { font: 600 12px var(--mono); color: var(--ink-3); display: flex; justify-content: space-between; gap: 8px; }
+.lg .nm { font: 700 19px/1.15 var(--display); }
+.lg .nm a { color: inherit; text-decoration: none; }
+.lg .nm a:hover { text-decoration: underline; }
+.lg .champ { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
+.lg .champ b { font-size: 16px; }
+.lg .rounds-line { color: var(--ink-3); font-size: 13px; }
+.chip { display: inline-block; font: 600 10.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; background: var(--up-soft); color: var(--up); vertical-align: 2px; }
+button.link { all: unset; cursor: pointer; color: var(--up); font-weight: 600; font-size: 14px; }
+button.link:hover { text-decoration: underline; }
+.standings { display: grid; gap: 2px; font-size: 14px; }
+.standings div { display: flex; justify-content: space-between; gap: 8px; padding: 3px 0; border-bottom: 1px dashed var(--rule); }
+.standings .rl { margin-top: 10px; display: grid; gap: 3px; border: 0; }
+.standings .rl a { font-size: 13.5px; }
+
+/* margin dot chart */
+.dots { display: grid; gap: 0; }
+.dotrow { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr) 3.2em; gap: 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.dotrow .t { font-weight: 600; }
+.dotrow .m { color: var(--ink-2); font-size: 13px; }
+.dotrow .plot { position: relative; height: 22px; margin-inline: 8px; }
+.dotrow .plot .axis { position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: var(--rule); }
+.dotrow .plot .gap { position: absolute; top: calc(50% - 1.5px); height: 3px; background: var(--up); border-radius: 2px; }
+.dotrow .plot i { position: absolute; top: 50%; transform: translate(-50%, -50%); border-radius: 50%; display: block; }
+.dotrow .plot i.w { width: 14px; height: 14px; background: var(--up); box-shadow: 0 0 0 2px var(--sheet); }
+.dotrow .plot i.r { width: 12px; height: 12px; border: 2px solid var(--up); background: var(--paper); }
+.dotrow .plot i.a { width: 8px; height: 8px; background: var(--ink-3); }
+.dotrow .val { font: 600 16px var(--mono); color: var(--up); text-align: right; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); margin-bottom: 8px; align-items: center; }
+.legend i { display: inline-block; vertical-align: -1px; margin-right: 6px; border-radius: 50%; }
+.scale { display: flex; justify-content: space-between; font: 12px var(--mono); color: var(--ink-3); margin-top: 6px; }
+@media (max-width: 640px) {
+  .dotrow { grid-template-columns: minmax(0, 1fr) 3em; }
+  .dotrow .plot { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* column charts */
+.cols { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; align-items: end; height: 190px; border-bottom: 1px solid var(--ink-3); }
+.cols div { position: relative; background: var(--up); border-radius: 4px 4px 0 0; min-height: 2px; }
+.cols div span { position: absolute; bottom: calc(100% + 4px); left: 0; right: 0; text-align: center; font: 600 11.5px var(--mono); color: var(--ink-2); }
+.collabels { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; font: 11.5px var(--mono); color: var(--ink-3); text-align: center; margin-top: 6px; }
+
+/* podium stack */
+.stack { display: flex; height: 14px; grid-column: 2 / span 2; margin-top: 5px; gap: 2px; }
+.stack span { border-radius: 2px; min-width: 3px; }
+.stack span:last-child { border-radius: 2px 4px 4px 2px; }
+.sw { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin-right: 6px; }
+
+/* love/hate */
+.lh { display: grid; grid-template-columns: minmax(0, 1fr) 2.2em minmax(0, 1fr) 2.2em; gap: 0 8px; align-items: center; }
+.lh .l { display: flex; justify-content: flex-end; }
+.lh .l span, .lh .r span { height: 10px; border-radius: 3px; display: block; }
+.lh .l span { background: var(--up); }
+.lh .r span { background: var(--down); }
+.lhrow { padding: 10px 0; border-bottom: 1px solid var(--rule); display: grid; gap: 6px; }
+.lhrow .t { font-weight: 600; }
+.lhrow .m { color: var(--ink-2); font-size: 13.5px; }
+
+/* heatmap */
+.heatwrap { overflow-x: auto; }
+table.heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+table.heat th { font: 600 11.5px var(--body); color: var(--ink-2); white-space: nowrap; padding: 0 6px 0 0; text-align: right; }
+table.heat thead th { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 6px 0; height: 120px; vertical-align: bottom; }
+table.heat td { width: 30px; height: 30px; border-radius: 4px; text-align: center; font: 600 10.5px var(--mono); color: var(--ink); }
+table.heat td.self { background: transparent; }
+.diverge { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--ink-2); margin-top: 12px; flex-wrap: wrap; }
+.diverge .ramp { width: 200px; max-width: 50vw; height: 10px; border-radius: 3px; background: linear-gradient(90deg, var(--down), var(--mid), var(--up)); }
+
+/* lookup */
+.lookup { background: var(--sheet); border: 1px solid var(--rule); border-radius: 14px; padding: clamp(18px, 3vw, 32px); }
+.field { display: grid; gap: 6px; max-width: 420px; margin-bottom: 22px; }
+.field label { font: 600 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+select, input[type="search"] { font: 500 17px var(--body); padding: 11px 14px; border: 1.5px solid var(--rule); border-radius: 8px; background: var(--paper); color: var(--ink); width: 100%; }
+.card-head { display: flex; flex-wrap: wrap; gap: 10px 28px; align-items: end; padding-bottom: 18px; border-bottom: 2px solid var(--ink); margin-bottom: 18px; }
+.card-head h3 { font: 800 clamp(34px, 6vw, 56px)/.95 var(--display); letter-spacing: -.03em; margin: 0; flex: 1 1 260px; overflow-wrap: anywhere; }
+.statgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 20px; margin-bottom: 28px; }
+.stat b { display: block; font: 700 28px/1.05 var(--display); }
+.stat span { font-size: 13px; color: var(--ink-2); }
+.tagline { font-size: 17px; color: var(--ink-2); margin: 0 0 22px; max-width: 70ch; }
+.tagline b { color: var(--ink); }
+.results { display: grid; gap: 18px; }
+.songhit { border-top: 1px solid var(--rule); padding-top: 14px; }
+.songhit h4 { margin: 0 0 6px; font: 700 18px/1.2 var(--display); }
+.songhit h4 small { font: 500 14px var(--body); color: var(--ink-2); }
+.pick { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; font-size: 14px; padding: 4px 0; }
+.pick .m { color: var(--ink-2); }
+.empty { color: var(--ink-3); font-style: italic; }
+.qchips { display: flex; flex-wrap: wrap; gap: 6px; margin: -10px 0 22px; }
+.qchips button { all: unset; cursor: pointer; font: 600 13px var(--body); padding: 6px 11px; border-radius: 999px; background: var(--wash); color: var(--ink-2); }
+.qchips button:hover { color: var(--ink); }
+
+/* awards */
+.awards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 14px; }
+.award { border: 1px solid var(--rule); background: var(--sheet); border-radius: var(--radius); padding: 18px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.award .k { font: 600 11.5px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--up); }
+.award .w { font: 700 22px/1.1 var(--display); overflow-wrap: anywhere; }
+.award .why { font-size: 14px; color: var(--ink-2); }
+
+footer { padding-block: 72px 48px; color: var(--ink-3); font-size: 13.5px; }
+footer p { margin: 0 0 6px; max-width: 75ch; }
+
+#tip { position: fixed; z-index: 20; pointer-events: none; background: var(--ink); color: var(--paper); font-size: 13px; line-height: 1.4; padding: 8px 10px; border-radius: 6px; max-width: 260px; opacity: 0; transition: opacity .1s; }
+[data-tip] { cursor: default; }
+@media (min-width: 900px) { .statgrid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+@media (max-width: 420px) { .statgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+html { scroll-behavior: smooth; }
+</style>
+
+<header class="hero wrap">
+  <div class="eyebrow" id="h-group"></div>
+  <h1 id="h-title"></h1>
+  <p class="tag" id="h-tag"></p>
+  <div class="counts" id="h-counts"></div>
+  <div class="facts" id="facts"></div>
+</header>
+
+<nav class="toc" aria-label="Sections"><div class="wrap navrow"><div class="seg" id="seg" role="group" aria-label="Which leagues to count"></div><div class="links" id="toc"></div></div></nav>
+
+<main id="main"></main>
+
+<footer class="wrap" id="foot"></footer>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+(function () {
+const D = DATA, P = D.players, R = D.rounds, L = D.leagues, SA = D.subs, VA = D.votes;
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const n0 = x => Math.round(x).toLocaleString("en-US");
+const n1 = x => (Math.round(x * 10) / 10).toFixed(1);
+const sgn = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x).toLocaleString("en-US");
+const pct = x => Math.round(x * 100) + "%";
+const mmss = ms => { const t = Math.round(ms / 1000); return Math.floor(t / 60) + ":" + String(t % 60).padStart(2, "0"); };
+const mean = a => a.reduce((x, y) => x + y, 0) / (a.length || 1);
+const median = a => { const b = [...a].sort((x, y) => x - y); const m = b.length >> 1; return b.length % 2 ? b[m] : (b[m - 1] + b[m]) / 2; };
+const by = (f, dir = -1) => (a, b) => (f(a) > f(b) ? dir : f(a) < f(b) ? -dir : 0);
+const count = (arr, f) => { const m = new Map(); for (const x of arr) { const k = f(x); if (k == null) continue; m.set(k, (m.get(k) || 0) + 1); } return m; };
+const top = (m, k = 10) => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, k);
+const plural = (n, w, ws) => n0(n) + " " + (n === 1 ? w : (ws || w + "s"));
+const listNames = a => a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1];
+const leagueUrl = l => "https://app.musicleague.com/l/" + l.id + "/";
+const roundName = s => R[s.round].name;
+const finish = s => s.of > 1 ? (s.of - s.rank) / (s.of - 1) : null;
+const normT = t => t.toLowerCase().replace(/\s+-\s+.*$/, "").replace(/\s*[\(\[][^)\]]*[\)\]]/g, "").replace(/&/g, "and").replace(/[^a-z0-9]+/g, "");
+const normA = a => a.toLowerCase().replace(/^the\s+/, "").replace(/&/g, "and").replace(/[^a-z0-9]+/g, "");
+for (const s of SA) { s.key = normT(s.title) + "|" + normA(s.lead); s.fin = finish(s); }
+const ordinal = n => n + (["th", "st", "nd", "rd"][(n % 100 - 20) % 10] || ["th", "st", "nd", "rd"][n % 100] || "th");
+const plain = t => t.replace(/\s+-\s+(\d{4}\s+)?Remaster.*$/i, "");
+
+const songLine = (s, opts = {}) => {
+  const bits = [esc(s.artist)];
+  if (!opts.noBy) bits.push(esc(P[s.by]));
+  bits.push(esc(roundName(s)));
+  if (opts.league) bits.push(esc(L[s.league].name));
+  return bits.join(" · ");
+};
+const cover = s => s.img ? `<img class="cov" src="${esc(s.img)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="cov"></span>`;
+
+function rankList(items, { title, meta, value, bar, max, cls, img }) {
+  const mx = max ?? Math.max(...items.map(x => Math.abs(bar ? bar(x) : 0)), 1);
+  return `<ol class="rank">${items.map((x, i) => {
+    const b = bar ? bar(x) : null;
+    const head = img ? `<span class="withcov">${cover(img(x))}<div><div class="t">${title(x)}</div><div class="m">${meta(x)}</div></div></span>` : `<span class="t">${title(x)}</span>`;
+    return `<li><span class="pos">${i + 1}</span>${head}<span class="val ${cls ? cls(x) : ""}">${value(x)}</span>${img ? "" : `<span class="m">${meta(x)}</span>`}${b != null ? `<span class="bar ${b < 0 ? "neg-bar" : ""}" style="width:${Math.max(1, Math.abs(b) / mx * 100)}%"></span>` : ""}</li>`;
+  }).join("")}</ol>`;
+}
+const panel = (title, sub, body) => `<div class="panel"><h3>${title}</h3><p class="sub">${sub}</p>${body}</div>`;
+
+let S, V, LV, players, active, groups, repeats, topArtists, mode = "all", lastQ = null;
+const MODES = { all: "All leagues", turbo: "Turbo", regular: "Regular" };
+function render() {
+const keep = l => mode === "all" || (mode === "turbo") === !!l.turbo;
+LV = L.filter(keep);
+S = SA.filter(s => keep(L[s.league]));
+V = VA.filter(v => keep(L[R[v[0]].league]));
+const RV = LV.flatMap(l => l.rounds);
+// ---------- core aggregates ----------
+players = P.map((name, i) => ({ i, name, songs: [], leagues: new Set(), wins: 0, ties: 0, pod: [0, 0, 0], last: 0, missed: 0, given: [], titles: 0 }));
+for (const s of S) {
+  const p = players[s.by];
+  p.songs.push(s); p.leagues.add(s.league);
+  if (s.rank === 1 && !s.tied) p.wins++;
+  if (s.rank === 1 && s.tied) p.ties++;
+  if (s.rank <= 3) p.pod[s.rank - 1]++;
+  if (s.last) p.last++;
+  if (!s.voted) p.missed++;
+}
+for (const v of V) players[v[1]].given.push(v);
+for (const l of LV) { const st = l.standings; if (st.length && st[0][1] > 0) { l.champ = st[0][0]; l.margin = st[0][1] - (st[1] ? st[1][1] : 0); l.co = st[1] && st[1][1] === st[0][1]; players[st[0][0]].titles++; } }
+active = players.filter(p => p.songs.length);
+const totalPts = p => p.songs.reduce((a, s) => a + s.score, 0);
+for (const p of players) { p.total = totalPts(p); p.avg = p.songs.length ? p.total / p.songs.length : 0; const f = p.songs.map(s => s.fin).filter(x => x != null); p.fin = f.length ? mean(f) : null; }
+const regulars = active.filter(p => p.songs.length >= D.minSongs);
+
+const sections = [];
+const addSection = (id, nav, eyebrow, h2, lede, body, note) => sections.push({ id, nav, html: `<section class="side" id="${id}"><div class="wrap"><header><div class="eyebrow">${eyebrow}</div><h2>${h2}</h2>${lede ? `<p>${lede}</p>` : ""}</header>${body}${note ? `<p class="note">${note}</p>` : ""}</div></section>` });
+
+// ---------- hero ----------
+const nVotes = V.length;
+const dateFmt = d => new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", year: "numeric" });
+const span = LV.length ? dateFmt(LV[0].start) + " – " + dateFmt(LV[LV.length - 1].end) : "";
+$("#h-group").textContent = [D.site.group, mode === "all" ? "" : MODES[mode], plural(LV.length, "league"), span].filter(Boolean).join(" · ");
+const tw = (D.site.title || "How We League").split(" ");
+$("#h-title").innerHTML = tw.length > 1 ? esc(tw.slice(0, -1).join(" ")) + " <span>" + esc(tw[tw.length - 1]) + "</span>" : esc(tw[0]);
+document.title = D.site.title || document.title;
+$("#h-tag").textContent = D.site.tagline || "";
+$("#h-counts").innerHTML = [[LV.length, "leagues"], [RV.length, "rounds"], [S.length, "songs"], [active.length, "players"], [nVotes, "votes"]].map(([v, k]) => `<div><b class="num">${n0(v)}</b><span>${k}</span></div>`).join("");
+
+// ---------- derived sets used across sections ----------
+const sortedScore = [...S].sort(by(s => s.score));
+groups = new Map();
+for (const s of S) { if (!groups.has(s.key)) groups.set(s.key, []); groups.get(s.key).push(s); }
+repeats = [...groups.values()].filter(g => g.length > 1).sort((a, b) => b.length - a.length || a[0].title.localeCompare(b[0].title));
+const voteAvg = active.map(p => ({ p, n: p.given.length, avg: mean(p.given.map(v => v[2])) })).filter(x => x.n >= 100);
+const withYear = S.filter(s => s.year);
+const withLen = S.filter(s => s.ms);
+const withGenre = S.filter(s => s.genre);
+
+const facts = [];
+const winLead = [...active].sort(by(p => p.wins))[0];
+facts.push(["Most round wins", esc(winLead.name), plural(winLead.wins, "outright win")]);
+const podLead = [...active].sort(by(p => p.pod[0] + p.pod[1] + p.pod[2]))[0];
+facts.push(["Most top-3 finishes", esc(podLead.name), plural(podLead.pod[0] + podLead.pod[1] + podLead.pod[2], "finish", "finishes")]);
+const titleLead = [...active].sort(by(p => p.titles * 1000 + p.total))[0];
+facts.push(["Most league titles", esc(titleLead.name), plural(titleLead.titles, "league") + " won"]);
+const hi = sortedScore[0], lo = sortedScore[sortedScore.length - 1];
+facts.push(["Highest score", esc(plain(hi.title)), sgn(hi.score) + " points · " + esc(P[hi.by])]);
+facts.push(["Lowest score", esc(plain(lo.title)), sgn(lo.score) + " points · " + esc(P[lo.by])]);
+if (repeats.length) { const r0 = repeats[0]; const tied = repeats.filter(g => g.length === r0.length).length - 1; facts.push(["Most repeated song", esc(plain(r0[0].title)), r0.length + " times" + (tied ? `, tied with ${tied} other${tied > 1 ? "s" : ""}` : "")]); }
+const harsh = [...voteAvg].sort(by(x => x.avg, 1))[0];
+if (harsh) facts.push(["Harshest voter", esc(harsh.p.name), n1(harsh.avg) + " average vote given"]);
+const ghost = [...active].sort(by(p => p.missed))[0];
+if (ghost && ghost.missed) facts.push(["Most forgotten votes", esc(ghost.name), plural(ghost.missed, "round") + " missed"]);
+if (withYear.length > S.length * 0.3) facts.push(["Average release year", String(Math.round(mean(withYear.map(s => s.year)))), "median " + Math.round(median(withYear.map(s => s.year)))]);
+$("#facts").innerHTML = facts.map(([k, v, s]) => `<div class="fact"><span class="eyebrow">${k}</span><span class="v">${v}</span><span class="s">${s}</span></div>`).join("");
+
+// ---------- player lookup ----------
+addSection("players", "Find your name", "Player lookup", "Find your name",
+  "Pick a player to see their record, their best and worst picks, the rounds they won, and who votes for them.",
+  `<div class="lookup"><div class="field"><label for="who">Player</label><select id="who">${[...active].sort((a, b) => a.name.localeCompare(b.name)).map(p => `<option value="${p.i}">${esc(p.name)}</option>`).join("")}</select></div><div id="card"></div></div>`);
+
+// ---------- song lookup ----------
+topArtists = top(count(S, s => s.lead), 6);
+addSection("songs", "Song lookup", "Song lookup", "Has it been picked before?",
+  "Type a song or an artist to see if it has come up in any league, who picked it, and how it did.",
+  `<div class="lookup"><div class="field"><label for="q">Song or artist</label><input type="search" id="q" autocomplete="off" placeholder="Try a song or artist"></div><div class="qchips">${[...(repeats[0] ? [plain(repeats[0][0].title)] : []), ...topArtists.slice(0, 5).map(a => a[0])].map(t => `<button type="button" data-q="${esc(t)}">${esc(t)}</button>`).join("")}</div><div id="hits" class="results"></div></div>`);
+
+// ---------- champions ----------
+{
+  const multi = active.filter(p => p.titles > 1).sort(by(p => p.titles));
+  const champs = new Set(LV.filter(l => l.champ != null).map(l => l.champ));
+  const lede = `${LV.length} leagues, ${champs.size} different champions. The champion is the player with the most total points in that league.` + (multi.length ? ` ${listNames(multi.slice(0, 3).map(p => `${esc(p.name)} has won ${p.titles}`))}.` : "");
+  const cards = LV.map(l => {
+    const c = l.champ != null ? players[l.champ] : null;
+    const runner = l.standings[1];
+    return `<article class="lg"><div class="no"><span>No. ${l.i + 1}</span><span>${dateFmt(l.start)} · ${plural(l.players.length, "player")}</span></div>
+      <div class="nm"><a href="${leagueUrl(l)}" target="_blank" rel="noopener">${esc(l.name)}</a></div>
+      <div class="rounds-line">${esc(l.rounds.slice(0, 3).map(r => R[r].name).join(" · "))}${l.rounds.length > 3 ? ` · +${l.rounds.length - 3} more` : ""}</div>
+      ${c ? `<div class="champ"><b>${esc(c.name)} ${c.titles > 1 ? `<span class="chip">${c.titles}× champ</span>` : ""}</b><span class="num">${n0(l.standings[0][1])} pts</span></div>
+      <div class="rounds-line">${l.co ? "Tied for first" : `+${n0(l.margin)} on ${esc(P[runner[0]])}`}</div>` : `<div class="rounds-line">No votes yet</div>`}
+      <button type="button" class="link" data-league="${l.i}" aria-expanded="false">Show standings and playlists</button><div class="standings" hidden></div></article>`;
+  }).join("");
+  addSection("champions", "Champions", "Leagues in order", "Every league and who won it", lede, `<div class="leagues">${cards}</div>`, "Each league name opens it in Music League. Standings list every round's Spotify playlist.");
+}
+
+// ---------- victories ----------
+{
+  const rows = [];
+  let tiesFirst = 0;
+  for (const ri of RV) { const r = R[ri];
+    const ss = S.filter(s => s.round === ri).sort(by(s => s.score));
+    if (ss.length < 2 || !r.voters) continue;
+    if (ss[0].score === ss[1].score) { tiesFirst++; continue; }
+    rows.push({ w: ss[0], r2: ss[1], avg: r.avg, margin: ss[0].score - ss[1].score });
+  }
+  rows.sort(by(x => x.margin));
+  const best = rows.slice(0, 10);
+  const mx = Math.max(...best.map(x => x.w.score)), mn = Math.min(0, ...best.map(x => x.avg));
+  const xp = v => ((v - mn) / (mx - mn)) * 100;
+  const body = `<div class="legend"><span><i style="width:12px;height:12px;background:var(--up)"></i>Winner</span><span><i style="width:11px;height:11px;border:2px solid var(--up)"></i>Runner-up</span><span><i style="width:8px;height:8px;background:var(--ink-3)"></i>Average song in that round</span></div>
+  <div class="dots">${best.map(x => `<div class="dotrow"><div><div class="t">${esc(plain(x.w.title))}</div><div class="m">${esc(P[x.w.by])} · ${esc(roundName(x.w))} · ${esc(L[x.w.league].name)}</div></div>
+    <div class="plot"><span class="axis"></span><span class="gap" style="left:${xp(x.r2.score)}%;width:${xp(x.w.score) - xp(x.r2.score)}%"></span>
+    <i class="a" style="left:${xp(x.avg)}%" data-tip="Round average: ${n1(x.avg)} pts"></i><i class="r" style="left:${xp(x.r2.score)}%" data-tip="Runner-up: ${esc(plain(x.r2.title))} (${esc(P[x.r2.by])}), ${x.r2.score} pts"></i><i class="w" style="left:${xp(x.w.score)}%" data-tip="Winner: ${x.w.score} pts"></i></div>
+    <div class="val">+${x.margin}</div></div>`).join("")}</div>
+  <div class="dotrow" style="border:0;padding-top:0"><div></div><div class="scale"><span>${mn} pts</span><span>${mx} pts</span></div><div></div></div>`;
+  addSection("victories", "Victories", "Round victories", "The biggest wins ever recorded", "The line between the winner and the runner-up is the margin.", body, `${plural(tiesFirst, "round")} ended in a tie for first and are not shown.`);
+}
+
+// ---------- best and worst ----------
+{
+  const songMeta = s => songLine(s);
+  const hiL = rankList(sortedScore.slice(0, 10), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), img: s => s });
+  const loL = rankList(sortedScore.slice(-10).reverse(), { title: s => esc(plain(s.title)), meta: songMeta, value: s => sgn(s.score), cls: s => s.score < 0 ? "neg" : "", img: s => s });
+  const liked = [...S].sort((a, b) => b.upvoters - a.upvoters || b.up - a.up).slice(0, 10);
+  const hated = [...S].filter(s => s.downvoters).sort((a, b) => b.downvoters - a.downvoters || a.score - b.score).slice(0, 10);
+  const share = s => { const l = L[s.league]; const v = R[s.round].voters - (s.voted ? 1 : 0); return v > 0 && l.up ? s.up / (v * l.up) : 0; };
+  const sharers = [...S].filter(s => R[s.round].voters >= 5).sort(by(share)).slice(0, 10);
+  const lh = S.filter(s => s.upvoters >= 3 && s.downvoters >= 3 && Math.min(s.upvoters, s.downvoters) / Math.max(s.upvoters, s.downvoters) >= 0.6)
+    .sort((a, b) => Math.min(b.upvoters, b.downvoters) - Math.min(a.upvoters, a.downvoters) || (a.upvoters + a.downvoters < b.upvoters + b.downvoters ? 1 : -1)).slice(0, 10);
+  const lhMax = Math.max(1, ...lh.map(s => Math.max(s.upvoters, s.downvoters)));
+  const lhHtml = lh.length ? `<div class="legend"><span><i style="width:12px;height:12px;border-radius:3px;background:var(--up)"></i>Upvoted by</span><span><i style="width:12px;height:12px;border-radius:3px;background:var(--down)"></i>Downvoted by</span></div>` + lh.map(s => `<div class="lhrow"><div><div class="t">${esc(plain(s.title))}</div><div class="m">${songMeta(s)}</div></div>
+    <div class="lh"><div class="l"><span style="width:${s.upvoters / lhMax * 100}%"></span></div><span class="num pos-v">${s.upvoters}</span><span class="num neg" style="text-align:right">${s.downvoters}</span><div class="r"><span style="width:${s.downvoters / lhMax * 100}%"></span></div></div></div>`).join("") : `<p class="empty">No song split the room evenly enough.</p>`;
+  const body = `<div class="grid2">
+    ${panel("Highest scores", "Top 10 songs by points", hiL)}
+    ${panel("Lowest scores", "Bottom 10 songs, after downvotes", loL)}
+    ${panel("Everybody liked this one", "Most different people giving it an upvote", rankList(liked, { title: s => esc(plain(s.title)), meta: songMeta, value: s => s.upvoters + " ppl", bar: s => s.upvoters }))}
+    ${panel("Everybody hated this one", "Most different people giving it a downvote", rankList(hated, { title: s => esc(plain(s.title)), meta: songMeta, value: s => s.downvoters + " ppl", bar: s => -s.downvoters, cls: () => "neg" }))}
+    ${panel("Best scoring", "Share of the maximum possible upvote points", rankList(sharers, { title: s => esc(plain(s.title)), meta: songMeta, value: s => pct(share(s)), bar: s => share(s), max: 1 }))}
+    ${panel("People love it and hate it", "About as many people upvoted as downvoted", lhHtml)}
+  </div>`;
+  addSection("best-worst", "Best and worst", "Songs", "The best and worst songs of all time",
+    "Raw round scores. Leagues hand out very different point budgets, from 4 to 20 points a round, so the top spots lean toward the big-budget leagues. Best scoring evens that out.",
+    body, "Best scoring is the upvote points a song received divided by the number of other voters in that round times the league's top single vote. Love and hate counts are people, not points, for songs with at least 3 of each where the smaller side is at least 60% of the bigger.");
+}
+
+// ---------- release years ----------
+if (withYear.length > S.length * 0.3) {
+  const dec = y => y < 1960 ? "<1960" : Math.floor(y / 10) * 10 + "s";
+  const decs = ["<1960", "1960s", "1970s", "1980s", "1990s", "2000s", "2010s", "2020s"];
+  const dc = count(withYear, s => dec(s.year));
+  const dmax = Math.max(...decs.map(d => dc.get(d) || 0));
+  const decScore = decs.filter(d => (dc.get(d) || 0) >= 10).map(d => ({ d, n: dc.get(d), avg: mean(withYear.filter(s => dec(s.year) === d).map(s => s.fin)) })).sort(by(x => x.avg));
+  const uniq = arr => { const seen = new Set(); return arr.filter(s => !seen.has(s.key) && seen.add(s.key)); };
+  const old = uniq([...withYear].sort(by(s => s.year, 1))).slice(0, 6);
+  const nu = uniq([...withYear].sort(by(s => s.year))).slice(0, 6);
+  const avgY = Math.round(mean(withYear.map(s => s.year))), medY = Math.round(median(withYear.map(s => s.year)));
+  const pAvg = regulars.map(p => ({ p, ys: p.songs.filter(s => s.year).map(s => s.year) })).filter(x => x.ys.length >= 10).map(x => ({ ...x, avg: mean(x.ys) }));
+  const body = `<div class="grid2">
+    ${panel("Songs by decade", "Count of songs, all leagues", `<div class="cols">${decs.map(d => `<div style="height:${(dc.get(d) || 0) / dmax * 100}%" data-tip="${d}: ${n0(dc.get(d) || 0)} songs"><span>${n0(dc.get(d) || 0)}</span></div>`).join("")}</div><div class="collabels">${decs.map(d => `<span>${d.replace("s", "")}</span>`).join("")}</div>`)}
+    ${panel("Which decades finish best", "Average finish, where 100% is first and 0% is last in the round", rankList(decScore, { title: x => x.d, meta: x => plural(x.n, "song"), value: x => pct(x.avg), bar: x => x.avg, max: 1 }))}
+    ${panel("Oldest songs picked", "Earliest release year found", rankList(old, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => s.year, img: s => s }))}
+    ${panel("Newest songs picked", "Latest release year found", rankList(nu, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => s.year, img: s => s }))}
+    ${panel("Lives in the past", `Oldest average release year (${D.minSongs}+ songs)`, rankList([...pAvg].sort(by(x => x.avg, 1)).slice(0, 6), { title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
+    ${panel("Keeps up with new releases", "Newest average release year", rankList([...pAvg].sort(by(x => x.avg)).slice(0, 6), { title: x => esc(x.p.name), meta: x => plural(x.ys.length, "song") + " with a year", value: x => Math.round(x.avg) }))}
+  </div>`;
+  addSection("years", "Release years", "Release years", `The music skews around ${medY}`,
+    `The average song picked was released in ${avgY}, and the median is ${medY}. Release years were found for ${n0(withYear.length)} of ${n0(S.length)} picks (${pct(withYear.length / S.length)}).`,
+    body, "Years use the earlier of Spotify's album date and the first release MusicBrainz lists for the recording. Covers, live versions, and unmatched titles can be off by a few years, so treat these as a good estimate.");
+}
+
+// ---------- genres ----------
+if (withGenre.length > S.length * 0.3) {
+  const gc = count(withGenre, s => s.genre);
+  const gl = top(gc, 20).filter(([g, n]) => n >= 3);
+  const gScore = gl.filter(([g, n]) => n >= 10).map(([g, n]) => ({ g, n, avg: mean(withGenre.filter(s => s.genre === g).map(s => s.fin)) })).sort(by(x => x.avg));
+  const loyal = active.map(p => { const gs = p.songs.filter(s => s.genre); const t = top(count(gs, s => s.genre), 1)[0]; return t && gs.length >= 20 ? { p, g: t[0], n: t[1], of: gs.length, sh: t[1] / gs.length } : null; }).filter(Boolean).sort(by(x => x.sh)).slice(0, 8);
+  const definers = gl.slice(0, 12).map(([g]) => `<div class="panel"><h3 style="font-size:17px">${esc(g)}</h3><p class="sub">${top(count(withGenre.filter(s => s.genre === g), s => s.lead), 3).map(([a, n]) => `${esc(a)} <span class="num">${n}</span>`).join(" · ")}</p></div>`).join("");
+  const body = `<div class="grid2">
+    ${panel("Most-picked genres", "Share of song picks, by the artist's main genre", rankList(gl, { title: x => esc(x[0]), meta: x => plural(x[1], "song"), value: x => pct(x[1] / withGenre.length), bar: x => x[1] }))}
+    ${panel("Which genres finish best", "Average finish in the round, 10+ songs", rankList(gScore, { title: x => esc(x.g), meta: x => plural(x.n, "song"), value: x => pct(x.avg), bar: x => x.avg, max: 1 }))}
+  </div>
+  <h3 style="font:700 20px var(--display);margin:44px 0 14px">Who defines each genre</h3><div class="grid3" style="gap:4px 36px">${definers}</div>
+  ${loyal.length ? `<div class="grid2" style="margin-top:36px">${panel("One-genre loyalists", "Highest share of a player's picks in one genre, 20+ songs", rankList(loyal, { title: x => esc(x.p.name), meta: x => `${esc(x.g)} · ${x.n} of ${x.of} songs`, value: x => pct(x.sh), bar: x => x.sh, max: 1 }))}</div>` : ""}`;
+  const g0 = gl[0], best = gScore[0];
+  addSection("genres", "Genres", "Genres", "What the leagues listen to",
+    `${esc(g0[0])} is the most-picked genre at ${pct(g0[1] / withGenre.length)} of picks${best ? `, and ${esc(best.g)} songs finish best on average` : ""}. Genres were found for ${n0(withGenre.length)} of ${n0(S.length)} picks.`,
+    body, "Genre comes from MusicBrainz community tags on the artist, grouped into broad buckets, so every song by an artist gets that artist's main genre. Artists with no tags are left out.");
+}
+
+// ---------- song length ----------
+if (withLen.length > S.length * 0.3) {
+  const avg = mean(withLen.map(s => s.ms)), med = median(withLen.map(s => s.ms));
+  const uniq = arr => { const seen = new Set(); return arr.filter(s => !seen.has(s.key) && seen.add(s.key)); };
+  const long = uniq([...withLen].sort(by(s => s.ms))).slice(0, 6), short = uniq([...withLen].sort(by(s => s.ms, 1))).slice(0, 6);
+  const pl = regulars.map(p => { const ls = p.songs.filter(s => s.ms).map(s => s.ms); return ls.length >= D.minSongs ? { p, n: ls.length, avg: mean(ls), d: mean(ls) - avg } : null; }).filter(Boolean);
+  const body = `<div class="grid2">
+    ${panel("Longest songs picked", "Each song counted once", rankList(long, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => mmss(s.ms), img: s => s }))}
+    ${panel("Shortest songs picked", "Each song counted once", rankList(short, { title: s => esc(plain(s.title)), meta: s => songLine(s), value: s => mmss(s.ms), img: s => s }))}
+    ${panel("Picks the shortest songs", `How much shorter their average is than the overall average (${D.minSongs}+ songs)`, rankList([...pl].sort(by(x => x.d, 1)).slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d, cls: () => "" }))}
+    ${panel("Picks the longest songs", "How much longer their average is than the overall average", rankList([...pl].sort(by(x => x.d)).slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} songs · averages ${mmss(x.avg)}`, value: x => (x.d < 0 ? "−" : "+") + mmss(Math.abs(x.d)), bar: x => x.d }))}
+  </div>`;
+  addSection("length", "Song length", "Song length", `The average pick runs ${mmss(avg)}`,
+    `The average song is ${mmss(avg)} and the median is ${mmss(med)}. The longest pick runs ${mmss(long[0].ms)} and the shortest is ${mmss(short[0].ms)}. Lengths were found for ${n0(withLen.length)} of ${n0(S.length)} picks.`, body);
+}
+
+// ---------- repeats ----------
+{
+  const r5 = repeats.slice(0, 12);
+  const arts = top(count(S, s => s.lead), 12);
+  const head = repeats.length ? (() => { const n = repeats[0].length; const t = repeats.filter(g => g.length === n); return t.length > 1 ? `${t.length} songs were picked ${n} times` : `“${esc(plain(t[0][0].title))}” was picked ${n} times`; })() : "No song has been picked twice";
+  const lede = repeats.length ? `${plural(repeats.length, "song")} came up more than once. ` + (() => { const n = repeats[0].length; const t = repeats.filter(g => g.length === n); return `${listNames(t.slice(0, 4).map(g => "“" + esc(plain(g[0].title)) + "”"))} ${t.length > 1 ? "each " : ""}came up ${n} times.`; })() : "";
+  const copy = new Map();
+  for (const g of repeats) { const sorted = [...g].sort((a, b) => a.round - b.round); for (const s of sorted.slice(1)) copy.set(s.by, (copy.get(s.by) || 0) + 1); }
+  const body = `<div class="grid2">
+    ${panel("Most repeated songs", "Times submitted", rankList(r5, { title: g => esc(plain(g[0].title)), meta: g => esc(g[0].lead) + " · " + listNames([...new Set(g.map(s => P[s.by]))].map(esc)), value: g => g.length + "×", bar: g => g.length, img: g => g[0] }))}
+    ${panel("Most submitted artists", "Songs submitted across all leagues", rankList(arts, { title: a => esc(a[0]), meta: a => plural(new Set(S.filter(s => s.lead === a[0]).map(s => s.by)).size, "different player"), value: a => a[1], bar: a => a[1] }))}
+    ${copy.size ? panel("Didn't check the archive", "Songs a player submitted after someone already had", rankList(top(copy, 6), { title: x => esc(P[x[0]]), meta: () => "repeat submissions", value: x => x[1], bar: x => x[1] })) : ""}
+  </div>`;
+  addSection("repeats", "Repeats", "Déjà vu", head, lede, body, "Songs match on title and lead artist, ignoring remaster and version tags.");
+}
+
+// ---------- top 3 ----------
+{
+  const pod = [...active].filter(p => p.pod[0] + p.pod[1] + p.pod[2]).sort((a, b) => (b.pod[0] + b.pod[1] + b.pod[2]) - (a.pod[0] + a.pod[1] + a.pod[2]) || b.pod[0] - a.pod[0]).slice(0, 12);
+  const mx = Math.max(...pod.map(p => p.pod[0] + p.pod[1] + p.pod[2]));
+  const lastL = [...active].filter(p => p.songs.length >= D.minSongs).map(p => ({ p, r: p.last / p.songs.length })).sort(by(x => x.r)).slice(0, 6);
+  const wl = [...active].filter(p => p.wins).sort((a, b) => b.wins - a.wins || b.ties - a.ties).slice(0, 8);
+  const never = active.filter(p => p.songs.length >= D.minSongs && !p.last).map(p => p.name);
+  const podHtml = `<div class="legend"><span><span class="sw" style="background:var(--pod-1)"></span>1st</span><span><span class="sw" style="background:var(--pod-2)"></span>2nd</span><span><span class="sw" style="background:var(--pod-3)"></span>3rd</span></div><ol class="rank">${pod.map((p, i) => { const t = p.pod[0] + p.pod[1] + p.pod[2]; return `<li><span class="pos">${i + 1}</span><span class="t">${esc(p.name)}</span><span class="val">${t}</span><span class="stack" style="width:${t / mx * 100}%">${p.pod.map((c, k) => c ? `<span style="flex:${c};background:var(--pod-${k + 1})" data-tip="${esc(p.name)}: ${c} × ${ordinal(k + 1)}"></span>` : "").join("")}</span></li>`; }).join("")}</ol>`;
+  const body = `<div class="grid2">
+    ${panel("Top-3 finishes", "Songs that placed 1st, 2nd, or 3rd in their round. Ties count.", podHtml)}
+    <div class="panel" style="display:grid;gap:40px;align-content:start">
+    ${panel("Outright round wins", "First place with no tie", rankList(wl, { title: p => esc(p.name), meta: p => p.ties ? `plus ${plural(p.ties, "shared first")}` : "no shared firsts", value: p => p.wins, bar: p => p.wins }))}
+    ${panel("Finds the bottom most often", `Share of songs that finished last (${D.minSongs}+ songs)`, rankList(lastL, { title: x => esc(x.p.name), meta: x => `${x.p.last} of ${x.p.songs.length} songs`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
+    </div></div>`;
+  addSection("top3", "Top 3", "Players", `${esc(podLead.name)} makes the podium most`,
+    `${esc(podLead.name)} has ${podLead.pod[0] + podLead.pod[1] + podLead.pod[2]} top-3 finishes. ${esc(winLead.name)} has the most outright round wins, with ${winLead.wins}.` + (never.length ? ` ${listNames(never.map(esc))} ${never.length > 1 ? "have" : "has"} never come in last.` : ""), body, "Last place counts include ties.");
+}
+
+// ---------- overall ----------
+{
+  const tot = [...active].sort(by(p => p.total)).slice(0, 10);
+  const avg = [...regulars].sort(by(p => p.avg)).slice(0, 10);
+  const fin = [...regulars].sort(by(p => p.fin)).slice(0, 10);
+  const singles = [];
+  for (const l of LV) for (const [pi, t] of l.standings) { const n = S.filter(s => s.league === l.i && s.by === pi).length; if (n >= 4) singles.push({ p: players[pi], l, t, n, fin: mean(S.filter(s => s.league === l.i && s.by === pi).map(s => s.fin).filter(x => x != null)) }); }
+  singles.sort(by(x => x.fin));
+  const body = `<div class="grid2">
+    ${panel("Total points", `All ${LV.length} leagues`, rankList(tot, { title: p => esc(p.name), meta: p => `${plural(p.leagues.size, "league")} · ${plural(p.songs.length, "song")}`, value: p => n0(p.total), bar: p => p.total }))}
+    ${panel("Average finish", `Where a player's songs land in the round, ${D.minSongs}+ songs. 100% is always first.`, rankList(fin, { title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => pct(p.fin), bar: p => p.fin, max: 1 }))}
+    ${panel("Points per song", `Players with ${D.minSongs} or more songs`, rankList(avg, { title: p => esc(p.name), meta: p => plural(p.songs.length, "song"), value: p => n1(p.avg), bar: p => p.avg }))}
+    ${panel("Best single league", "Average finish in one league, 4+ songs", rankList(singles.slice(0, 10), { title: x => esc(x.p.name), meta: x => `${esc(x.l.name)} · ${n0(x.t)} pts from ${x.n} songs`, value: x => pct(x.fin), bar: x => x.fin, max: 1 }))}
+  </div>`;
+  addSection("overall", "Overall", "Best overall", `${esc(tot[0].name)} leads on total points`,
+    `Total points reward showing up. Points per song reward picking well, but leagues give out very different budgets. Average finish is the fairest single measure: it only asks where each song placed in its round.${fin[0] ? ` ${esc(fin[0].name)} leads on average finish at ${pct(fin[0].fin)}.` : ""}`, body);
+}
+
+// ---------- voting ----------
+{
+  const maxUp = new Map(), maxDown = new Map();
+  for (const v of V) { const l = L[R[v[0]].league]; if (v[2] > 0 && v[2] === l.up) maxUp.set(v[1], (maxUp.get(v[1]) || 0) + 1); if (v[2] < 0 && l.down < -1 && v[2] === l.down) maxDown.set(v[1], (maxDown.get(v[1]) || 0) + 1); }
+  const dv = new Map();
+  for (const p of active) dv.set(p.i, p.given.filter(v => v[2] < 0).length);
+  const downShare = active.filter(p => p.given.length >= 100).map(p => ({ p, n: dv.get(p.i), r: dv.get(p.i) / p.given.length })).sort(by(x => x.r));
+  const soft = [...voteAvg].sort(by(x => x.avg)).slice(0, 6);
+  const harshL = [...voteAvg].sort(by(x => x.avg, 1)).slice(0, 6);
+  const mu = top(maxUp, 1)[0], md = top(maxDown, 1)[0];
+  const body = `<div class="grid2">
+    ${panel("Most max upvotes", "Votes at the league's top single vote", rankList(top(maxUp, 8), { title: x => esc(P[x[0]]), meta: () => "maxed-out upvotes", value: x => x[1], bar: x => x[1] }))}
+    ${panel("Most max downvotes", "Leagues with a −1 downvote cap are left out", rankList(top(maxDown, 8), { title: x => esc(P[x[0]]), meta: () => "maxed-out downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
+    ${panel("Harshest voters", "Lowest average vote given, 100+ votes", rankList(harshL, { title: x => esc(x.p.name), meta: x => plural(x.n, "vote"), value: x => n1(x.avg), bar: x => x.avg }))}
+    ${panel("Reaches for the downvote", "Share of their votes that are downvotes", rankList(downShare.slice(0, 6), { title: x => esc(x.p.name), meta: x => `${x.n} of ${x.p.given.length} votes`, value: x => pct(x.r), bar: x => -x.r, cls: () => "neg" }))}
+  </div>`;
+  const same = mu && md && mu[0] === md[0];
+  addSection("voters", "Extreme voters", "Voting", same ? `${esc(P[mu[0]])} votes hardest in both directions` : `${esc(P[mu ? mu[0] : harshL[0].p.i])} goes all in`,
+    "A vote counts as maxed out when it equals that league's cap: the highest or lowest single vote anyone gave a song there.", body);
+}
+
+// ---------- mutual admiration ----------
+{
+  const n = P.length;
+  const num = Array.from({ length: n }, () => new Float64Array(n)), den = Array.from({ length: n }, () => new Float64Array(n)), cnt = Array.from({ length: n }, () => new Int32Array(n));
+  const downs = new Map();
+  const vByRound = new Map();
+  for (const v of V) { if (!vByRound.has(v[0])) vByRound.set(v[0], []); vByRound.get(v[0]).push(v); if (v[2] < 0 && v[3] >= 0) { const k = v[1] + ">" + v[3]; downs.set(k, (downs.get(k) || 0) + 1); } }
+  const subsByRound = new Map();
+  for (const s of S) { if (!subsByRound.has(s.round)) subsByRound.set(s.round, new Set()); subsByRound.get(s.round).add(s.by); }
+  for (const [ri, vs] of vByRound) {
+    const subm = subsByRound.get(ri) || new Set();
+    const per = new Map();
+    for (const v of vs) { if (!per.has(v[1])) per.set(v[1], []); per.get(v[1]).push(v); }
+    for (const [a, list] of per) {
+      const T = list.reduce((x, v) => x + Math.max(0, v[2]), 0);
+      if (!T) continue;
+      const others = [...subm].filter(b => b !== a);
+      if (!others.length) continue;
+      const exp = 1 / others.length;
+      for (const b of others) { const got = list.filter(v => v[3] === b && v[2] > 0).reduce((x, v) => x + v[2], 0); num[a][b] += got / T; den[a][b] += exp; cnt[a][b]++; }
+    }
+  }
+  const aff = (a, b) => den[a][b] ? num[a][b] / den[a][b] : null;
+  const MIN = 12;
+  const pairs = [];
+  for (let a = 0; a < n; a++) for (let b = a + 1; b < n; b++) if (cnt[a][b] >= MIN && cnt[b][a] >= MIN) pairs.push({ a, b, ab: aff(a, b), ba: aff(b, a), m: Math.min(aff(a, b), aff(b, a)), M: Math.max(aff(a, b), aff(b, a)), n: Math.min(cnt[a][b], cnt[b][a]) });
+  const fans = [...pairs].sort(by(x => x.m)).slice(0, 6);
+  const cold = [...pairs].sort(by(x => x.M, 1)).slice(0, 6);
+  const oneway = [];
+  for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) if (a !== b && cnt[a][b] >= MIN && cnt[b][a] >= MIN) oneway.push({ a, b, d: aff(a, b) - aff(b, a), ab: aff(a, b), ba: aff(b, a) });
+  oneway.sort(by(x => x.d));
+  const x2 = v => n1(v) + "×";
+  const pairRow = x => ({ t: `${esc(P[x.a])} &amp; ${esc(P[x.b])}`, m: `${esc(P[x.a])} → ${x2(x.ab)} · ${esc(P[x.b])} → ${x2(x.ba)} · ${x.n} shared rounds` });
+  const core = active.filter(p => p.songs.length >= 30).sort((a, b) => a.name.localeCompare(b.name));
+  const cell = (a, b) => {
+    if (a === b) return `<td class="self"></td>`;
+    const v = cnt[a][b] >= 5 ? aff(a, b) : null;
+    if (v == null) return `<td style="background:var(--wash)" data-tip="${esc(P[a])} and ${esc(P[b])} rarely shared a round"></td>`;
+    const t = Math.max(-1, Math.min(1, Math.log2(v)));
+    const bg = t >= 0 ? `color-mix(in oklab, var(--up) ${Math.round(t * 85)}%, var(--mid))` : `color-mix(in oklab, var(--down) ${Math.round(-t * 85)}%, var(--mid))`;
+    return `<td style="background:${bg}" data-tip="${esc(P[a])} gives ${esc(P[b])} ${x2(v)} a fair share of their upvotes (${cnt[a][b]} rounds)"></td>`;
+  };
+  const heat = core.length >= 4 ? `<h3 style="font:700 20px var(--display);margin:44px 0 4px">Who votes for whom</h3><p class="sub" style="color:var(--ink-3);font-size:13.5px;margin:0 0 14px">Each row is a voter, each column a submitter. Blue means the voter gives that person more than a fair share of their upvotes; pink means less. Players with 30+ songs.</p>
+    <div class="heatwrap"><table class="heat"><thead><tr><th></th>${core.map(p => `<th scope="col">${esc(p.name)}</th>`).join("")}</tr></thead><tbody>${core.map(a => `<tr><th scope="row">${esc(a.name)}</th>${core.map(b => cell(a.i, b.i)).join("")}</tr>`).join("")}</tbody></table></div>
+    <div class="diverge"><span>Half a fair share</span><span class="ramp"></span><span>Double</span></div>` : "";
+  const grudges = top(downs, 8);
+  const body = `<div class="grid2">
+    ${panel("Biggest mutual fans", "Both give each other well over a fair share of upvotes", rankList(fans, { title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.m), bar: x => x.m }))}
+    ${panel("Not each other's cup of tea", "Neither gives the other much", rankList(cold, { title: x => pairRow(x).t, meta: x => pairRow(x).m, value: x => x2(x.M) }))}
+    ${panel("One-way crushes", "The biggest gap between how much one gives and gets back", rankList(oneway.slice(0, 6), { title: x => `${esc(P[x.a])} → ${esc(P[x.b])}`, meta: x => `gives ${x2(x.ab)}, gets ${x2(x.ba)} back`, value: x => "+" + n1(x.d) }))}
+    ${panel("Grudges", "Most downvotes from one player to another", rankList(grudges, { title: x => { const [a, b] = x[0].split(">"); return `${esc(P[a])} → ${esc(P[b])}`; }, meta: () => "downvotes", value: x => x[1], bar: x => -x[1], cls: () => "neg" }))}
+  </div>${heat}`;
+  const f0 = fans[0];
+  addSection("mutual", "Mutual admiration", "Mutual admiration", f0 ? `${esc(P[f0.a])} and ${esc(P[f0.b])} are each other's biggest fans` : "Mutual admiration",
+    `A fair share is what you'd give someone if you split your upvotes evenly across everyone in the round. 2.0× means twice that. Pairs need ${MIN}+ rounds together.`, body);
+}
+
+// ---------- forgot to vote ----------
+{
+  const miss = S.filter(s => !s.voted);
+  const lost = miss.reduce((a, s) => a + s.lost, 0);
+  const pm = active.filter(p => p.missed).sort((a, b) => b.missed - a.missed).slice(0, 8);
+  const lm = top(count(miss, s => s.league), 8);
+  const pen = [...miss].sort(by(s => s.lost)).filter(s => s.lost > 0).slice(0, 8);
+  const never = active.filter(p => !p.missed).sort(by(p => p.songs.length)).slice(0, 8);
+  const body = `<div class="grid2">
+    ${panel("Most forgotten rounds", "Rounds submitted without voting", rankList(pm, { title: p => esc(p.name), meta: p => `${pct(p.missed / p.songs.length)} of their rounds`, value: p => p.missed, bar: p => p.missed }))}
+    ${panel("Biggest penalties", "Songs that lost the most upvotes by missing the vote", pen.length ? rankList(pen, { title: s => esc(plain(s.title)), meta: s => songLine(s, { league: true }), value: s => "−" + s.lost, cls: () => "neg" }) : `<p class="empty">Nobody has lost points this way.</p>`)}
+    ${panel("By league", "Songs from players who didn't vote", rankList(lm, { title: x => esc(L[x[0]].name), meta: x => plural(L[x[0]].rounds.length, "round"), value: x => x[1], bar: x => x[1] }))}
+    ${panel("Never forgot", "Players with the most songs and zero missed votes", never.length ? rankList(never, { title: p => esc(p.name), meta: p => plural(p.leagues.size, "league"), value: p => p.songs.length, bar: p => p.songs.length }) : `<p class="empty">Everyone has missed at least once.</p>`)}
+  </div>`;
+  addSection("forgot", "Forgot to vote", "Attendance", "You forgot to vote",
+    `If you don't vote in a round, your upvotes don't count and your song's score becomes minus its downvotes. Every score on this page uses that rule. ${plural(miss.length, "song")} missed the vote, giving up ${n0(lost)} upvote points.`, body);
+}
+
+// ---------- awards ----------
+{
+  const aw = [];
+  const add = (k, w, why) => w && aw.push({ k, w, why });
+  const tl = [...active].sort((a, b) => b.titles - a.titles || b.total - a.total)[0];
+  add("Dynasty", tl.name, `${plural(tl.titles, "league title")}, the most of anyone.`);
+  add("Podium regular", podLead.name, `${podLead.pod[0] + podLead.pod[1] + podLead.pod[2]} top-3 finishes.`);
+  const finL = [...regulars].sort(by(p => p.fin))[0];
+  if (finL) add("Most consistent", finL.name, `Songs land ${pct(finL.fin)} of the way to first, on average.`);
+  add("Biggest hit", P[hi.by], `“${plain(hi.title)}” scored ${hi.score} in ${roundName(hi)}.`);
+  add("Clearing the room", P[lo.by], `“${plain(lo.title)}” finished at ${sgn(lo.score)}.`);
+  const crowd = [...S].sort((a, b) => b.upvoters - a.upvoters || b.score - a.score)[0];
+  add("Crowd pleaser", P[crowd.by], `${crowd.upvoters} different people upvoted “${plain(crowd.title)}”.`);
+  if (harsh) add("Toughest critic", harsh.p.name, `Gives an average vote of ${n1(harsh.avg)}.`);
+  const softest = [...voteAvg].sort(by(x => x.avg))[0];
+  if (softest) add("Softest touch", softest.p.name, `Gives an average vote of ${n1(softest.avg)}.`);
+  if (ghost && ghost.missed) add("Ghost", ghost.name, `Forgot to vote in ${plural(ghost.missed, "round")}.`);
+  const yrs = regulars.map(p => ({ p, ys: p.songs.filter(s => s.year).map(s => s.year) })).filter(x => x.ys.length >= 10).map(x => ({ p: x.p, a: mean(x.ys) }));
+  if (yrs.length > 2) { const o = [...yrs].sort(by(x => x.a, 1))[0], y = [...yrs].sort(by(x => x.a))[0]; add("Time traveler", o.p.name, `Average pick is from ${Math.round(o.a)}.`); add("New music Friday", y.p.name, `Average pick is from ${Math.round(y.a)}.`); }
+  const lens = regulars.map(p => ({ p, ls: p.songs.filter(s => s.ms).map(s => s.ms) })).filter(x => x.ls.length >= 10).map(x => ({ p: x.p, a: mean(x.ls) }));
+  if (lens.length > 2) { const lg = [...lens].sort(by(x => x.a))[0]; add("Extended mix", lg.p.name, `Average pick runs ${mmss(lg.a)}.`); }
+  const iron = [...active].sort(by(p => p.leagues.size))[0];
+  add("Iron player", iron.name, `Played ${plural(iron.leagues.size, "league")}.`);
+  addSection("awards", "Awards", "Awards", "The Music League awards", "One winner per category, pulled from the stats above.",
+    `<div class="awards">${aw.map(a => `<div class="award"><span class="k">${esc(a.k)}</span><span class="w">${esc(a.w)}</span><span class="why">${esc(a.why)}</span></div>`).join("")}</div>`);
+}
+
+// ---------- render ----------
+$("#main").innerHTML = sections.map(s => s.html).join("");
+$("#toc").innerHTML = sections.map(s => `<a href="#${s.id}">${s.nav}</a>`).join("");
+$("#foot").innerHTML = `<p>Built on ${esc(D.built)} from the full round and vote data for ${mode === "all" ? "all " : ""}${LV.length} ${mode === "all" ? "" : MODES[mode].toLowerCase() + " "}leagues: ${n0(RV.length)} rounds, ${n0(S.length)} submissions, and ${n0(nVotes)} votes.</p><p>Songs finish in the order of their round score; tied songs share the better place. Release years, lengths and genres come from Spotify and MusicBrainz and may have gaps.</p>`;
+// lookups and nav follow the new sections
+const who = $("#who");
+let start = null;
+try { start = localStorage.getItem("ml-player"); } catch (e) {}
+if (start == null || !players[+start] || !players[+start].songs.length) start = String([...active].sort(by(p => p.leagues.size * 1000 + p.songs.length))[0].i);
+who.value = start;
+renderPlayer(+start);
+$("#q").value = lastQ ?? (repeats[0] ? plain(repeats[0][0].title) : (topArtists[0] || [""])[0]);
+songSearch();
+document.querySelectorAll("#seg button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+syncNav();
+}
+
+// league standings toggles
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-league]");
+  if (b) {
+    const l = L[+b.dataset.league], box = b.nextElementSibling;
+    if (!box.innerHTML) box.innerHTML = l.standings.map(([p, t], i) => `<div><span>${i + 1}. ${esc(P[p])}</span><span class="num">${n0(t)}</span></div>`).join("") +
+      `<div class="rl"><span class="eyebrow">Round playlists</span>${l.rounds.map(r => R[r].playlist ? `<a href="${esc(R[r].playlist)}" target="_blank" rel="noopener">${R[r].n}. ${esc(R[r].name)}</a>` : `<span>${R[r].n}. ${esc(R[r].name)}</span>`).join("")}</div>`;
+    box.hidden = !box.hidden;
+    b.setAttribute("aria-expanded", String(!box.hidden));
+    b.textContent = box.hidden ? "Show standings and playlists" : "Hide standings";
+  }
+  const q = e.target.closest("button[data-q]");
+  if (q) { $("#q").value = q.dataset.q; songSearch(); }
+});
+
+// player card
+function renderPlayer(i) {
+  const p = players[i];
+  const songs = p.songs;
+  const bestS = [...songs].sort((a, b) => (b.fin ?? -1) - (a.fin ?? -1) || b.score - a.score).slice(0, 5);
+  const worstS = [...songs].sort((a, b) => (a.fin ?? 2) - (b.fin ?? 2) || a.score - b.score).slice(0, 5);
+  const wins = songs.filter(s => s.rank === 1).sort((a, b) => a.round - b.round);
+  const favA = top(count(songs, s => s.lead), 1)[0];
+  const favG = top(count(songs.filter(s => s.genre), s => s.genre), 1)[0];
+  const ys = songs.filter(s => s.year).map(s => s.year);
+  // fans: who gives p the most points relative to rounds shared
+  const fanPts = new Map(), givePts = new Map();
+  for (const v of V) { if (v[3] === i && v[2] > 0) fanPts.set(v[1], (fanPts.get(v[1]) || 0) + v[2]); if (v[1] === i && v[2] > 0 && v[3] >= 0) givePts.set(v[3], (givePts.get(v[3]) || 0) + v[2]); }
+  const fan = top(fanPts, 1)[0], fav = top(givePts, 1)[0];
+  const rankAmong = (arr, f) => [...arr].sort(by(f)).findIndex(x => x.i === i) + 1;
+  const lgs = [...p.leagues].length;
+  const parts = [];
+  if (favA) parts.push(`Most-picked artist: <b>${esc(favA[0])}</b> (${favA[1]})`);
+  if (favG) parts.push(`go-to genre: <b>${esc(favG[0])}</b>`);
+  if (ys.length >= 5) parts.push(`average song from <b>${Math.round(mean(ys))}</b>`);
+  if (fan) parts.push(`biggest fan: <b>${esc(P[fan[0]])}</b> (${n0(fan[1])} pts given)`);
+  if (fav) parts.push(`votes most for <b>${esc(P[fav[0]])}</b> (${n0(fav[1])} pts)`);
+  const songItem = s => `<li><span class="pos">${s.rank}/${s.of}</span><span class="withcov">${cover(s)}<div><div class="t">${esc(plain(s.title))}</div><div class="m">${songLine(s, { noBy: true, league: true })}</div></div></span><span class="val ${s.score < 0 ? "neg" : ""}">${sgn(s.score)}</span></li>`;
+  $("#card").innerHTML = `<div class="card-head"><h3>${esc(p.name)}</h3><span class="eyebrow">${plural(lgs, "league")} · ${plural(songs.length, "song")}</span></div>
+    <div class="statgrid">
+      <div class="stat"><b class="num">${n0(p.total)}</b><span>total points · #${rankAmong(active, x => x.total)} of ${active.length}</span></div>
+      <div class="stat"><b class="num">${p.titles}</b><span>league ${p.titles === 1 ? "title" : "titles"}</span></div>
+      <div class="stat"><b class="num">${p.wins}</b><span>outright round wins${p.ties ? ` (+${p.ties} shared)` : ""}</span></div>
+      <div class="stat"><b class="num">${p.pod[0] + p.pod[1] + p.pod[2]}</b><span>top-3 finishes</span></div>
+      <div class="stat"><b class="num">${p.fin != null ? pct(p.fin) : "–"}</b><span>average finish</span></div>
+      <div class="stat"><b class="num">${p.missed}</b><span>rounds without voting</span></div>
+    </div>
+    <p class="tagline">${parts.length ? parts.join(" · ").replace(/^M/, "M") + "." : ""}</p>
+    <div class="grid2">
+      ${panel("Best finishes", "Place in round · song", `<ol class="rank">${bestS.map(songItem).join("")}</ol>`)}
+      ${panel("Worst finishes", "Place in round · song", `<ol class="rank">${worstS.map(songItem).join("")}</ol>`)}
+      ${panel("Rounds won", wins.length ? plural(wins.length, "round") + " in first place, ties included" : "No first places yet", wins.length ? `<ol class="rank">${wins.map(songItem).join("")}</ol>` : `<p class="empty">The next one, maybe.</p>`)}
+      ${panel("League by league", "Final place in each league", `<ol class="rank">${L.filter(l => p.leagues.has(l.i)).map(l => { const pos = l.standings.findIndex(x => x[0] === i); const t = l.standings[pos][1]; return `<li><span class="pos">${l.i + 1}</span><span class="t">${esc(l.name)}</span><span class="val">${ordinal(pos + 1)}</span><span class="m">${n0(t)} pts · of ${l.standings.length}</span></li>`; }).join("")}</ol>`)}
+    </div>`;
+}
+document.addEventListener("change", e => { if (e.target.id === "who") { renderPlayer(+e.target.value); try { localStorage.setItem("ml-player", e.target.value); } catch (err) {} } });
+
+// song search
+function songSearch() {
+  const raw = $("#q").value.trim(), q = raw.toLowerCase();
+  const out = $("#hits");
+  if (q.length < 2) { out.innerHTML = `<p class="empty">Type at least two letters.</p>`; return; }
+  const hits = [...groups.values()].filter(g => g.some(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q)));
+  hits.sort((a, b) => b.length - a.length || a[0].title.localeCompare(b[0].title));
+  if (!hits.length) { out.innerHTML = `<p class="empty">Nobody has picked anything matching “${esc(raw)}” yet. It's all yours.</p>`; return; }
+  const total = hits.reduce((a, g) => a + g.length, 0);
+  out.innerHTML = `<p class="sub" style="margin:0;color:var(--ink-2)">${plural(hits.length, "song")}, picked ${plural(total, "time")}.</p>` + hits.slice(0, 40).map(g => `<div class="songhit"><div class="withcov">${cover(g[0])}<div><h4>${esc(plain(g[0].title))} <small>${esc(g[0].artist)}${g[0].year ? " · " + g[0].year : ""}</small></h4></div></div>
+    ${[...g].sort((a, b) => a.round - b.round).map(s => `<div class="pick"><span><b>${esc(P[s.by])}</b> <span class="m">· ${esc(roundName(s))} · ${esc(L[s.league].name)}</span></span><span class="num">${ordinal(s.rank)} of ${s.of} · ${sgn(s.score)}</span></div>`).join("")}</div>`).join("") + (hits.length > 40 ? `<p class="empty">Showing 40 of ${hits.length}. Keep typing to narrow it down.</p>` : "");
+}
+document.addEventListener("input", e => { if (e.target.id === "q") { lastQ = e.target.value; songSearch(); } });
+
+// nav highlight
+let navRaf = 0;
+function syncNav() { const links = [...document.querySelectorAll("#toc a")], secs = [...document.querySelectorAll("section.side")]; navRaf = 0; const y = innerHeight * 0.35; let cur = null; for (const s of secs) if (s.getBoundingClientRect().top <= y) cur = s; links.forEach(a => a.classList.toggle("on", !!cur && a.getAttribute("href") === "#" + cur.id)); const on = links.find(a => a.classList.contains("on")); if (on) { const bar = on.parentElement; bar.scrollLeft = on.offsetLeft - bar.offsetLeft - bar.clientWidth / 2 + on.offsetWidth / 2; } }
+addEventListener("scroll", () => { if (!navRaf) navRaf = requestAnimationFrame(syncNav); }, { passive: true });
+
+// league filter
+const nTurbo = L.filter(l => l.turbo).length;
+$("#seg").innerHTML = nTurbo && nTurbo < L.length ? Object.entries(MODES).map(([k, v]) => `<button type="button" data-mode="${k}" aria-pressed="false">${v} <span class="num">${k === "all" ? L.length : k === "turbo" ? nTurbo : L.length - nTurbo}</span></button>`).join("") : "";
+document.addEventListener("click", e => {
+  const b = e.target.closest("#seg button");
+  if (!b || b.dataset.mode === mode) return;
+  mode = b.dataset.mode;
+  try { localStorage.setItem("ml-mode", mode); } catch (err) {}
+  const anchor = document.querySelector("section.side") && [...document.querySelectorAll("section.side")].filter(s => s.getBoundingClientRect().top <= innerHeight * 0.35).pop();
+  render();
+  if (anchor && document.getElementById(anchor.id)) document.getElementById(anchor.id).scrollIntoView({ behavior: "instant" });
+});
+try { const m = localStorage.getItem("ml-mode"); if (m && MODES[m] && $("#seg").innerHTML) mode = m; } catch (e) {}
+render();
+if (location.hash && document.getElementById(location.hash.slice(1))) document.getElementById(location.hash.slice(1)).scrollIntoView();
+
+// tooltip
+const tip = $("#tip");
+document.addEventListener("pointerover", e => { const t = e.target.closest("[data-tip]"); if (!t) { tip.style.opacity = 0; return; } tip.textContent = t.dataset.tip; tip.style.opacity = 1; });
+document.addEventListener("pointermove", e => { if (tip.style.opacity === "1") { const x = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8); tip.style.left = x + "px"; tip.style.top = (e.clientY + 16) + "px"; } });
+})();
+</script>

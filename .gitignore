@@ -1,0 +1,7 @@
+# Raw Music League exports and lookup cache stay local
+data/
+cache/
+cache_enrich.log
+.claude/
+__pycache__/
+.DS_Store
